@@ -51,6 +51,10 @@
                                   not supported by any browser */
 }
 
+.hidden {
+  display: none !important;
+}
+
 .audio_player {
   display: flex;
   flex-direction: row;
@@ -183,6 +187,10 @@
   }
 
   .skip_button {
+
+    &.back {
+      transform: rotate(180deg);
+    }
 
     .skip_button_inner {
       display: flex;

@@ -154,6 +154,19 @@ class AudioPlayer extends React.Component {
     });
   }
 
+  backSkip () {
+    const audio = this.audio;
+    if (audio.currentTime >= this.stayOnBackSkipThreshold) {
+      return audio.currentTime = 0;
+    }
+    let i = this.currentTrackIndex - 1;
+    if (i < 0) {
+      i = this.playlist.length - 1;
+    }
+    this.currentTrackIndex = i - 1;
+    this.skipToNextTrack();
+  }
+
   updateSource () {
     this.audio.src = this.playlist[this.currentTrackIndex].url;
   }
@@ -231,6 +244,16 @@ class AudioPlayer extends React.Component {
       <div id="audio_player" className="audio_player" title={ displayText }>
 
         <div className="audio_controls">
+          <div id="skip_button"
+               className={ classNames('skip_button', 'back', 'audio_button', {
+                 'hidden': this.props.hideBackSkip
+               }) }
+               onClick={ this.backSkip.bind(this) }>
+            <div className="skip_button_inner">
+              <div className="right_facing_triangle"></div>
+              <div className="right_facing_triangle"></div>
+            </div>
+          </div>
           <div id="play_pause_button"
                className={ classNames('play_pause_button', 'audio_button', {
                  'paused': this.state.paused
