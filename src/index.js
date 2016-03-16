@@ -24,6 +24,20 @@ function convertToTime (number) {
  *  { "url": "https://domain.com/track2.ogg",
  *    "displayText": "ArtistB - Track 2" }]
  *
+ * Accepts 'autoplay' prop (true/[false]).
+ *
+ * Accepts 'autoplayDelayInSeconds' prop (default 0).
+ *
+ * Accepts 'hideBackSkip' prop (default false,
+ * hides back skip button if true).
+ *
+ * Accepts 'stayOnBackSkipThreshold' prop, default 5,
+ * is number of seconds to progress until pressing back skip
+ * restarts the current song.
+ *
+ * Accepts 'placeAtTop' prop, default false, if true,
+ * player is placed at top of screen instead of bottom.
+ *
  */
 class AudioPlayer extends React.Component {
 
