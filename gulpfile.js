@@ -46,7 +46,13 @@ gulp.task('styles:main', function () {
 
 gulp.task('watch', function () {
   gulp.watch('src/css/*.css', ['styles:main']);
-  gulp.watch(['src/js/**/*.js'], ['browserify']);
+  gulp.watch([
+    'node_modules/react-responsive-audio-player/dist/*.css'
+  ], ['styles:audioplayer']);
+  gulp.watch([
+    'src/js/**/*.js',
+    'node_modules/react-responsive-audio-player/dist/*.js'
+  ], ['browserify']);
 });
 
 gulp.task('default', ['browserify', 'styles', 'watch']);
