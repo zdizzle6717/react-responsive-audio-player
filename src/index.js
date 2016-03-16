@@ -46,7 +46,12 @@ class AudioPlayer extends React.Component {
       activeTrackIndex: -1,
       // indicates whether audio player should be paused
       paused: true,
-      // elapsed time for current track, in seconds
+      /* elapsed time for current track, in seconds -
+       * DISPLAY ONLY! the actual elapsed time may
+       * not match up if we're currently seeking, since
+       * the new time is visually previewed before the
+       * audio seeks.
+       */
       displayedTime: 0 
     };
 
@@ -210,7 +215,7 @@ class AudioPlayer extends React.Component {
     const fullTime = convertToTime(duration);
     const timeRatio = `${ elapsedTime } / ${ fullTime }`;
 
-    const progressBarWidth = `{ displayedTime / duration }%`;
+    const progressBarWidth = `${ (displayedTime / duration) * 100 }%`;
 
     return (
       <div id="audio_player" className="audio_player" title={ displayText }>
