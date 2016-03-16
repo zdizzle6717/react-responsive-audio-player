@@ -91,6 +91,9 @@ While `react-dom` isn't technically a peer dependency, you'll need it if you pla
 
 When you first include the component in your project it might not look how you're expecting. Be sure to check the **Styling** section below.
 
+###Pre-built releases
+If you prefer not to use a package bundler, you can find built releases to download [here](/releases/latest).
+
 ##Options
 Options can be passed to the AudioPlayer element as props. Currently supported props are:
 * `playlist`: an array containing urls and display text for each of the tracks you wish to play (see above example for format). **undefined** by default.
