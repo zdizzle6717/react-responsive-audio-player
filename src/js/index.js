@@ -22,6 +22,8 @@ ReactDOM.render(
   <AudioPlayer
     playlist={ playlist }
     autoplay={ true }
-    autoplayDelayInSeconds={ 0.5 } />,
+    autoplayDelayInSeconds={ 0.5 }
+    hideBackSkip={ false }
+    stayOnBackSkipThreshold={ 4.5 } />,
   document.getElementById('audio_player_container')
 );

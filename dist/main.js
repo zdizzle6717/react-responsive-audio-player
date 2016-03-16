@@ -19052,7 +19052,9 @@ var playlist = [{
 ReactDOM.render(React.createElement(AudioPlayer, {
   playlist: playlist,
   autoplay: true,
-  autoplayDelayInSeconds: 0.5 }), document.getElementById('audio_player_container'));
+  autoplayDelayInSeconds: 0.5,
+  hideBackSkip: false,
+  stayOnBackSkipThreshold: 4.5 }), document.getElementById('audio_player_container'));
 
 },{"react":158,"react-dom":2,"react-responsive-audio-player":160}],160:[function(require,module,exports){
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -19159,6 +19161,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    _this.playlist = props.playlist;
 
+	    /* how many seconds must progress before a back skip will
+	     * just restart the current track
+	     */
+	    _this.stayOnBackSkipThreshold = props.stayOnBackSkipThreshold || 5;
 	    /* true if the user is currently dragging the mouse
 	     * to seek a new track position
 	     */
@@ -19223,7 +19229,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	      });
 	      audio.addEventListener('stalled', this.togglePause.bind(this, true));
-	      if (this.playlist) {
+	      if (this.playlist && this.playlist.length) {
 	        this.updateSource();
 	        if (this.props.autoplay) {
 	          var delay = this.props.autoplayDelayInSeconds || 0;
@@ -19234,6 +19240,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'componentWillReceiveProps',
 	    value: function componentWillReceiveProps(nextProps) {
+	      this.stayOnBackSkipThreshold = nextProps.stayOnBackSkipThreshold || stayOnBackSkipThreshold;
 	      if (!nextProps.playlist) {
 	        return;
 	      }
@@ -19253,7 +19260,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          paused: true
 	        });
 	      }
-	      if (!this.playlist) {
+	      if (!this.playlist || !this.playlist.length) {
 	        return;
 	      }
 	      try {
@@ -19270,7 +19277,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var _this3 = this;
 
 	      this.audio.pause();
-	      if (!this.playlist) {
+	      if (!this.playlist || !this.playlist.length) {
 	        return;
 	      }
 	      var i = this.currentTrackIndex + 1;
@@ -19286,6 +19293,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var shouldPause = typeof shouldPlay === 'boolean' ? !shouldPlay : false;
 	        _this3.togglePause(shouldPause);
 	      });
+	    }
+	  }, {
+	    key: 'backSkip',
+	    value: function backSkip() {
+	      if (!this.playlist || !this.playlist.length) {
+	        return;
+	      }
+	      var audio = this.audio;
+	      if (audio.currentTime >= this.stayOnBackSkipThreshold) {
+	        return audio.currentTime = 0;
+	      }
+	      var i = this.currentTrackIndex - 1;
+	      if (i < 0) {
+	        i = this.playlist.length - 1;
+	      }
+	      this.currentTrackIndex = i - 1;
+	      this.skipToNextTrack();
 	    }
 	  }, {
 	    key: 'updateSource',
@@ -19309,6 +19333,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'adjustDisplayedTime',
 	    value: function adjustDisplayedTime(event) {
+	      if (!this.playlist || !this.playlist.length) {
+	        return;
+	      }
 	      // make sure we don't select stuff in the background while seeking
 	      if (event.type === 'mousedown' || event.type === 'touchstart') {
 	        this.seekInProgress = true;
@@ -19375,6 +19402,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	        React.createElement(
 	          'div',
 	          { className: 'audio_controls' },
+	          React.createElement(
+	            'div',
+	            { id: 'skip_button',
+	              className: classNames('skip_button', 'back', 'audio_button', {
+	                'hidden': this.props.hideBackSkip
+	              }),
+	              onClick: this.backSkip.bind(this) },
+	            React.createElement(
+	              'div',
+	              { className: 'skip_button_inner' },
+	              React.createElement('div', { className: 'right_facing_triangle' }),
+	              React.createElement('div', { className: 'right_facing_triangle' })
+	            )
+	          ),
 	          React.createElement(
 	            'div',
 	            { id: 'play_pause_button',
