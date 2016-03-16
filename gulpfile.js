@@ -8,15 +8,6 @@ var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
 var minifyCSS = require('gulp-minify-css');
 var autoprefixer = require('gulp-autoprefixer');
-
-gulp.task('copy', [
-  'copy:html'
-]);
-
-gulp.task('copy:html', function () {
-  return gulp.src('./src/**/*.html')
-    .pipe(gulp.dest('./dist/'));
-});
  
 gulp.task('browserify', function() {
   return browserify('./src/js/index.js')
@@ -27,7 +18,7 @@ gulp.task('browserify', function() {
       this.emit('end');
     })
     .pipe(source('main.js'))
-    .pipe(gulp.dest('./dist/js/'));
+    .pipe(gulp.dest('./dist/'));
 });
 
 gulp.task('styles', [
@@ -40,7 +31,7 @@ gulp.task('styles:audioplayer', function () {
     .pipe(plumber())
     .pipe(minifyCSS())
     .pipe(rename('audioplayer.css'))
-    .pipe(gulp.dest('./dist/css/'))
+    .pipe(gulp.dest('./dist/'))
 });
 
 gulp.task('styles:main', function () {
@@ -50,13 +41,12 @@ gulp.task('styles:main', function () {
     .pipe(autoprefixer({ browsers: ['> 2%'] }))
     .pipe(minifyCSS())
     .pipe(rename('main.css'))
-    .pipe(gulp.dest('dist/css/'), { cwd: '../../' });
+    .pipe(gulp.dest('dist/'), { cwd: '../../' });
 });
 
 gulp.task('watch', function () {
-  gulp.watch(['src/**/*.html'], ['copy:html']);
   gulp.watch('src/css/*.css', ['styles:main']);
   gulp.watch(['src/js/**/*.js'], ['browserify']);
 });
 
-gulp.task('default', ['copy', 'browserify', 'styles', 'watch']);
+gulp.task('default', ['browserify', 'styles', 'watch']);
