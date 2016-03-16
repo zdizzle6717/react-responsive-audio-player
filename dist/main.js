@@ -19054,7 +19054,8 @@ ReactDOM.render(React.createElement(AudioPlayer, {
   autoplay: true,
   autoplayDelayInSeconds: 0.5,
   hideBackSkip: false,
-  stayOnBackSkipThreshold: 4.5 }), document.getElementById('audio_player_container'));
+  stayOnBackSkipThreshold: 4.5,
+  placeAtTop: false }), document.getElementById('audio_player_container'));
 
 },{"react":158,"react-dom":2,"react-responsive-audio-player":160}],160:[function(require,module,exports){
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -19398,7 +19399,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      return React.createElement(
 	        'div',
-	        { id: 'audio_player', className: 'audio_player', title: displayText },
+	        { id: 'audio_player',
+	          className: classNames('audio_player', { 'top': this.props.placeAtTop }),
+	          title: displayText },
 	        React.createElement(
 	          'div',
 	          { className: 'audio_controls' },
