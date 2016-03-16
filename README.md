@@ -25,38 +25,65 @@ var playlist =
   [{ url: 'audio/track1.mp3',
      displayText: 'Track 1 by Some Artist' },
    { url: 'audio/track2.mp3',
-     displayText: 'Some Other Artist - Track 2' },
-   { url: 'https://some.online.server/track3.ogg',
-     displayText: 'Track 3 is the best one' }];
-
+     displayText: 'Some Other Artist - Track 2' }];
 ReactDOM.render(
-  <AudioPlayer
-    playlist={ playlist }
-    hideBackSkip={ true }
-    autoplay={ true }
-    autoplayDelayInSeconds={ 2.1 } />,
+  <AudioPlayer playlist={ playlist } hideBackSkip={ true } />,
   document.getElementById('audio_player_container')
 );
 ```
 JavaScript (without JSX):
 ```
 // dist/main.js
-
 ...
-
 ReactDOM.render(
   React.createElement(AudioPlayer, {
     playlist: playlist,
-    hideBackSkip: true,
-    autoplay: true,
-    autoplayDelayInSeconds: 2.1
+    hideBackSkip: true
   }),
   document.getElementById('audio_player_container')
 );
 ```
 
-##Installation
-If you use [npm](https://www.npmjs.com/) and a front-end package bundling system like [Browserify](http://browserify.org/) or [webpack](https://webpack.github.io/), it's easy to install the package and its dependencies in your project:
+##Getting started
+###Quick start
+The fastest way to get off the ground with this module is to paste the following code into an HTML file and open it in a web browser:
+```
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>React Responsive Audio Player</title>
+    <style> html, body { margin: 0; background: lightseagreen; } </style>
+    <!-- audioplayer.min.css v0.2.0 -->
+    <link rel="stylesheet" href="https://cdn.rawgit.com/benwiley4000/react-responsive-audio-player/d78956d2e925095f6e9437a2d03af9be20bff212/audioplayer.min.css">
+  </head>
+  <body>
+    <div id="audio_player_container"></div>
+
+    <!-- react/react-dom served over CDN -->
+    <script src="https://fb.me/react-0.14.7.js"></script>
+    <script src="https://fb.me/react-dom-0.14.7.js"></script>
+    <!-- classnames v2.2.3 -->
+    <script src="https://cdn.rawgit.com/JedWatson/classnames/a6934cd623c1ea2a895575af9c83b08c8bdd3b05/index.js"></script>
+    <!-- audioplayer.min.js v0.2.0 -->
+    <script src="https://cdn.rawgit.com/benwiley4000/react-responsive-audio-player/d78956d2e925095f6e9437a2d03af9be20bff212/audioplayer.min.js"></script>
+    <script>
+      var playlist =
+        [{ url: 'song1.mp3', displayText: 'Track 1 - a track to remember' },
+         { url: 'song2.ogg', displayText: 'Oggs Oggs Oggs' }];
+      ReactDOM.render(
+        React.createElement(AudioPlayer, { playlist: playlist, autoplay: true, autoplayDelayInSeconds: 2.1 }),
+        document.getElementById('audio_player_container')
+      );
+    </script>
+  </body>
+</html>
+```
+Of course you'll need to include paths to actual audio files, or the player will display and not work.
+
+###Package installation
+If you use [npm](https://www.npmjs.com/) and a front-end package bundling system like [Browserify](http://browserify.org/) or [webpack](https://webpack.github.io/), it's recommended that you install the package and its dependencies in your project:
 ```
 npm install --save react-responsive-audio-player classnames react react-dom
 ```
