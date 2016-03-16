@@ -11,7 +11,7 @@ var webpackConfig = {
     path: __dirname + '/dist',
     libraryTarget: 'umd',
     library: 'react-responsive-audio-player',
-    filename: 'bundle.js'
+    filename: 'audioplayer.js'
   },
   module: {
     loaders: [
@@ -33,10 +33,10 @@ var webpackConfig = {
   postcss: function () {
     return [autoprefixer({ browsers: ["> 2%"] })];
   },
-  externals: ['react'],
+  externals: ['react', 'classnames'],
   plugins: [
     new webpack.NoErrorsPlugin(),
-    new ExtractTextPlugin('bundle.css', {
+    new ExtractTextPlugin('audioplayer.css', {
       allChunks: true
     })
   ],
