@@ -1,6 +1,6 @@
-import { Component } from 'react';
+const React = require('react');
 
-class AudioPlayer extends Component {
+class AudioPlayer extends React.Component {
 
   constructor (props) {
     super(props);
@@ -18,4 +18,4 @@ class AudioPlayer extends Component {
 
 }
 
-export default AudioPlayer;
+module.exports = AudioPlayer;
