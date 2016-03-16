@@ -125,7 +125,7 @@ class AudioPlayer extends React.Component {
 
   skipToNextTrack (shouldPlay) {
     this.audio.pause();
-    let i = this.state.currentTrackIndex + 1;
+    let i = this.currentTrackIndex + 1;
     if (i >= this.playlist.length) {
       i = 0;
     }
@@ -141,7 +141,6 @@ class AudioPlayer extends React.Component {
   }
 
   updateSource () {
-    console.log(this.playlist, this.audio, this.state);
     this.audio.src = this.playlist[this.currentTrackIndex].url;
   }
 
