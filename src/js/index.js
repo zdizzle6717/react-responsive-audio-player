@@ -19,6 +19,9 @@ const playlist = [
 ];
 
 ReactDOM.render(
-  <AudioPlayer playlist={ playlist }/>,
+  <AudioPlayer
+    playlist={ playlist }
+    autoplay={ true }
+    autoplayDelayInSeconds={ 0.5 } />,
   document.getElementById('audio_player_container')
 );

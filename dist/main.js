@@ -19049,7 +19049,10 @@ var playlist = [{
   displayText: 'In the Hall of the Mountain King'
 }];
 
-ReactDOM.render(React.createElement(AudioPlayer, { playlist: playlist }), document.getElementById('audio_player_container'));
+ReactDOM.render(React.createElement(AudioPlayer, {
+  playlist: playlist,
+  autoplay: true,
+  autoplayDelayInSeconds: 0.5 }), document.getElementById('audio_player_container'));
 
 },{"react":158,"react-dom":2,"react-responsive-audio-player":160}],160:[function(require,module,exports){
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -19170,7 +19173,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      activeTrackIndex: -1,
 	      // indicates whether audio player should be paused
 	      paused: true,
-	      // elapsed time for current track, in seconds
+	      /* elapsed time for current track, in seconds -
+	       * DISPLAY ONLY! the actual elapsed time may
+	       * not match up if we're currently seeking, since
+	       * the new time is visually previewed before the
+	       * audio seeks.
+	       */
 	      displayedTime: 0
 	    };
 
@@ -19194,9 +19202,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // These listeners are outside the scope of our render method
 	      window.addEventListener('mouseup', this.seek.bind(this));
 	      document.addEventListener('touchend', this.seek.bind(this));
-	      window.addEventListener('resize', function () {
-	        _this2.audioProgressBoundingRect = _this2.audioProgressContainer.getBoundingClientRect();
-	      });
+	      window.addEventListener('resize', this.fetchAudioProgressBoundingRect.bind(this));
+	      this.fetchAudioProgressBoundingRect();
 
 	      /* We'll need to use some tools outside of the React
 	       * paradigm in order to hook up audio things correctly.
@@ -19218,6 +19225,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      audio.addEventListener('stalled', this.togglePause.bind(this, true));
 	      if (this.playlist) {
 	        this.updateSource();
+	        if (this.props.autoplay) {
+	          var delay = this.props.autoplayDelayInSeconds || 0;
+	          setTimeout(this.togglePause.bind(this, false), delay * 1000);
+	        }
 	      }
 	    }
 	  }, {
@@ -19242,6 +19253,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	          paused: true
 	        });
 	      }
+	      if (!this.playlist) {
+	        return;
+	      }
 	      try {
 	        this.audio.play();
 	      } catch (error) {
@@ -19256,6 +19270,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var _this3 = this;
 
 	      this.audio.pause();
+	      if (!this.playlist) {
+	        return;
+	      }
 	      var i = this.currentTrackIndex + 1;
 	      if (i >= this.playlist.length) {
 	        i = 0;
@@ -19274,6 +19291,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'updateSource',
 	    value: function updateSource() {
 	      this.audio.src = this.playlist[this.currentTrackIndex].url;
+	    }
+	  }, {
+	    key: 'fetchAudioProgressBoundingRect',
+	    value: function fetchAudioProgressBoundingRect() {
+	      this.audioProgressBoundingRect = this.audioProgressContainer.getBoundingClientRect();
 	    }
 	  }, {
 	    key: 'handleTimeUpdate',
@@ -19345,7 +19367,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var fullTime = convertToTime(duration);
 	      var timeRatio = elapsedTime + ' / ' + fullTime;
 
-	      var progressBarWidth = '{ displayedTime / duration }%';
+	      var progressBarWidth = displayedTime / duration * 100 + '%';
 
 	      return React.createElement(
 	        'div',
