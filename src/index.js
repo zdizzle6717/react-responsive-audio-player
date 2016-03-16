@@ -252,7 +252,9 @@ class AudioPlayer extends React.Component {
     const progressBarWidth = `${ (displayedTime / duration) * 100 }%`;
 
     return (
-      <div id="audio_player" className="audio_player" title={ displayText }>
+      <div id="audio_player"
+           className={ classNames('audio_player', { 'top': this.props.placeAtTop }) }
+           title={ displayText }>
 
         <div className="audio_controls">
           <div id="skip_button"

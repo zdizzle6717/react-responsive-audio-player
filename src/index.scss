@@ -64,6 +64,11 @@
   bottom: 0;
   width: 100%;
 
+  &.top {
+    bottom: initial;
+    top: 0;
+  }
+
   .audio_controls {
     display: flex;
     flex-direction: row;
@@ -93,7 +98,7 @@
   }
   .audio_info_marquee {
     overflow: hidden;
-    /* to make room for .time_progress */
+    /* to make room for .audio_time_progress */
     width: calc(100% - 176px);
     display: flex;
     flex-direction: row;
