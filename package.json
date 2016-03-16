@@ -11,6 +11,9 @@
     "type": "git",
     "url": "https://github.com/benwiley4000/react-responsive-audio-player.git"
   },
+  "engines": {
+    "node": "*"
+  },
   "keywords": [
     "audio",
     "html5",
