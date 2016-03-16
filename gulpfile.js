@@ -25,7 +25,7 @@ gulp.task('styles', [
 ]);
 
 gulp.task('styles:audioplayer', function () {
-  return gulp.src('./node_modules/react-responsive-audio-player/dist/bundle.css')
+  return gulp.src('./node_modules/react-responsive-audio-player/dist/audioplayer.css')
     .pipe(plumber())
     .pipe(minifyCSS())
     .pipe(rename('audioplayer.css'))
