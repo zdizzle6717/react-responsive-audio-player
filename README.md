@@ -127,6 +127,6 @@ If you plan to submit a pull request, please test your changes. You can create a
 # inside of project/node_modules/ directory (module doesn't exist here yet)
 ln -s ../../path/to/module/repository/ react-responsive-audio-player
 ```
-And you can delete that symbolic link (without deleting the linked directory) with `rm -rf react-responsive-audio-player`.
+And you can delete that symbolic link (without deleting the linked directory) with `rm react-responsive-audio-player` (no slash).
 
 You can also try doing this with [npm link](https://docs.npmjs.com/cli/link). However, it's been known to cause issues occasionally with duplicate peer dependencies, so be warned.
