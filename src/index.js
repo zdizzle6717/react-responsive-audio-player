@@ -93,6 +93,10 @@ class AudioPlayer extends React.Component {
     audio.addEventListener('stalled', this.togglePause.bind(this, true));
     if (this.playlist) {
       this.updateSource();
+      if (this.props.autoplay) {
+        const delay = this.props.autoplayDelayInSeconds || 0;
+        setTimeout(this.togglePause.bind(this, false), delay * 1000);
+      }
     }
   }
 
@@ -115,6 +119,9 @@ class AudioPlayer extends React.Component {
         paused: true
       });
     }
+    if (!this.playlist) {
+      return;
+    }
     try {
       this.audio.play();
     } catch (error) {
@@ -129,6 +136,9 @@ class AudioPlayer extends React.Component {
 
   skipToNextTrack (shouldPlay) {
     this.audio.pause();
+    if (!this.playlist) {
+      return;
+    }
     let i = this.currentTrackIndex + 1;
     if (i >= this.playlist.length) {
       i = 0;
