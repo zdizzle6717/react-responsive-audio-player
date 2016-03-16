@@ -39,7 +39,8 @@ var webpackConfig = {
     new ExtractTextPlugin('bundle.css', {
       allChunks: true
     })
-  ]
+  ],
+  watch: true
 };
 
 module.exports = webpackConfig;
