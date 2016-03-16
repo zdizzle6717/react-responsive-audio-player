@@ -65,9 +65,8 @@ class AudioPlayer extends React.Component {
     // These listeners are outside the scope of our render method
     window.addEventListener('mouseup', this.seek.bind(this));
     document.addEventListener('touchend', this.seek.bind(this));
-    window.addEventListener('resize', () => {
-      this.audioProgressBoundingRect = this.audioProgressContainer.getBoundingClientRect();
-    });
+    window.addEventListener('resize', this.fetchAudioProgressBoundingRect.bind(this));
+    this.fetchAudioProgressBoundingRect();
 
     /* We'll need to use some tools outside of the React
      * paradigm in order to hook up audio things correctly.
@@ -142,6 +141,10 @@ class AudioPlayer extends React.Component {
 
   updateSource () {
     this.audio.src = this.playlist[this.currentTrackIndex].url;
+  }
+
+  fetchAudioProgressBoundingRect () {
+    this.audioProgressBoundingRect = this.audioProgressContainer.getBoundingClientRect();
   }
 
   handleTimeUpdate () {
