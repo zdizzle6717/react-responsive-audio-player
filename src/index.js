@@ -333,4 +333,13 @@ class AudioPlayer extends React.Component {
 
 }
 
+AudioPlayer.propTypes = {
+  playlist: React.PropTypes.array,
+  autoplay: React.PropTypes.bool,
+  autoplayDelayInSeconds: React.PropTypes.number,
+  hideBackSkip: React.PropTypes.bool,
+  stayOnBackSkipThreshold: React.PropTypes.number,
+  placeAtTop: React.PropTypes.bool
+};
+
 module.exports = AudioPlayer;
