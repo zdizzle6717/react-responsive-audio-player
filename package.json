@@ -20,7 +20,11 @@
     "music",
     "player"
   ],
-  "author": "Ben Wiley",
+  "author": {
+    "name": "Ben Wiley",
+    "email": "therealbenwiley@gmail.com",
+    "url": "http://benwiley.org/"
+  },
   "license": "MIT",
   "peerDependencies": {
     "classnames": "^2.2.3",
