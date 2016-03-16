@@ -10,7 +10,7 @@ var webpackConfig = {
   output: {
     path: __dirname + '/dist',
     libraryTarget: 'umd',
-    library: 'react-responsive-audio-player',
+    library: 'AudioPlayer',
     filename: 'audioplayer.js'
   },
   module: {
@@ -33,7 +33,20 @@ var webpackConfig = {
   postcss: function () {
     return [autoprefixer({ browsers: ["> 2%"] })];
   },
-  externals: ['react', 'classnames'],
+  externals: {
+    'react': {
+      root: 'React',
+      commonjs: 'react',
+      commonjs2: 'react',
+      amd: 'react'
+    },
+    'classnames': {
+      root: 'classNames',
+      commonjs: 'classnames',
+      commonjs2: 'classnames',
+      amd: 'classnames'
+    }
+  },
   plugins: [
     new webpack.NoErrorsPlugin(),
     new ExtractTextPlugin('audioplayer.css', {
