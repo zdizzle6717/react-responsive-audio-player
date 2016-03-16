@@ -32,6 +32,10 @@ class AudioPlayer extends React.Component {
 
     this.playlist = props.playlist;
 
+    /* how many seconds must progress before a back skip will
+     * just restart the current track
+     */
+    this.stayOnBackSkipThreshold = props.stayOnBackSkipThreshold || 5;
     /* true if the user is currently dragging the mouse
      * to seek a new track position
      */
@@ -91,7 +95,7 @@ class AudioPlayer extends React.Component {
       });
     });
     audio.addEventListener('stalled', this.togglePause.bind(this, true));
-    if (this.playlist) {
+    if (this.playlist && this.playlist.length) {
       this.updateSource();
       if (this.props.autoplay) {
         const delay = this.props.autoplayDelayInSeconds || 0;
@@ -101,6 +105,7 @@ class AudioPlayer extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    this.stayOnBackSkipThreshold = nextProps.stayOnBackSkipThreshold || stayOnBackSkipThreshold;
     if (!nextProps.playlist) {
       return;
     }
@@ -119,7 +124,7 @@ class AudioPlayer extends React.Component {
         paused: true
       });
     }
-    if (!this.playlist) {
+    if (!this.playlist || !this.playlist.length) {
       return;
     }
     try {
@@ -136,7 +141,7 @@ class AudioPlayer extends React.Component {
 
   skipToNextTrack (shouldPlay) {
     this.audio.pause();
-    if (!this.playlist) {
+    if (!this.playlist || !this.playlist.length) {
       return;
     }
     let i = this.currentTrackIndex + 1;
@@ -155,6 +160,9 @@ class AudioPlayer extends React.Component {
   }
 
   backSkip () {
+    if (!this.playlist || !this.playlist.length) {
+      return;
+    }
     const audio = this.audio;
     if (audio.currentTime >= this.stayOnBackSkipThreshold) {
       return audio.currentTime = 0;
@@ -184,6 +192,9 @@ class AudioPlayer extends React.Component {
   }
 
   adjustDisplayedTime (event) {
+    if (!this.playlist || !this.playlist.length) {
+      return;
+    }
     // make sure we don't select stuff in the background while seeking
     if (event.type === 'mousedown' || event.type === 'touchstart') {
       this.seekInProgress = true;
