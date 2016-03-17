@@ -116,7 +116,7 @@ None of these options is required, though the player will be functionally disabl
 
 ##Styling
 **IMPORTANT NOTES**
-* In order to use the default stylings you'll need to grab the compiled `audioplayer.css` sheet from the module's `dist/` directory.
+* In order to use the default stylings you'll need to grab the compiled `audioplayer.css` sheet from the module's `dist/` directory. Again, if you're not using npm, you can get the sheet [here](https://github.com/benwiley4000/react-responsive-audio-player/releases).
 * Include the following code in your own CSS to ensure the audio player takes up the full screen width:
 ```
 html,
