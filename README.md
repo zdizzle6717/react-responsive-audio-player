@@ -153,7 +153,7 @@ Contributions are welcome. If you'd like to implement a new feature, please open
 ###Build
 To install build dependencies, run `npm install`.
 
-Run webpack with `npm run build`. It's configured to continue watching the directory for changes. Built files can be found in the `dist/` directory.
+Run webpack with `npm run build`. Built files can be found in the `dist/` directory. You can also use `npm run dev`; it's configured to do exactly the same thing, except it will continue watching for any changes you make, and recompile.
 
 If you plan to submit a pull request, please test your changes. You can create a symbolic link from the module to your project to make those tests easier.
 

@@ -5,6 +5,7 @@
   "main": "dist/audioplayer.js",
   "scripts": {
     "build": "rm -rf dist && webpack --progress",
+    "dev": "rm -rf dist && webpack --progress --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

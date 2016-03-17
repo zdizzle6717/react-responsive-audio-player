@@ -52,8 +52,7 @@ var webpackConfig = {
     new ExtractTextPlugin('audioplayer.css', {
       allChunks: true
     })
-  ],
-  watch: true
+  ]
 };
 
 module.exports = webpackConfig;
