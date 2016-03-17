@@ -1,6 +1,8 @@
 #react-responsive-audio-player
 
-A simple, clean, and responsive visual wrapper for the HTML audio tag, built with React. See it live at http://benwiley4000.github.io/react-responsive-audio-player/.
+A simple, clean, and responsive visual wrapper for the HTML audio tag, built with React. Give it a playlist and go.
+
+See it live at http://benwiley4000.github.io/react-responsive-audio-player/.
 
 **If you're not using npm and you need production-ready scripts to include in your project, check out [the releases](https://github.com/benwiley4000/react-responsive-audio-player/releases).**
 
