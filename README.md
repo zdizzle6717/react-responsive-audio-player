@@ -2,6 +2,8 @@
 
 A simple, clean, and responsive visual wrapper for the HTML audio tag, built with React. See it live at http://benwiley4000.github.io/react-responsive-audio-player/.
 
+**If you're not using npm and you need production-ready scripts to include in your project, check out [the releases](https://github.com/benwiley4000/react-responsive-audio-player/releases).**
+
 ##Usage
 HTML:
 ```
@@ -92,7 +94,7 @@ While `react-dom` isn't technically a peer dependency, you'll need it if you pla
 When you first include the component in your project it might not look how you're expecting. Be sure to check the **Styling** section below.
 
 ###Pre-built releases
-If you prefer not to use a package bundler, you can find built releases to download [here](/releases/latest).
+If you prefer not to use a package bundler, you can find built releases to download [here](https://github.com/benwiley4000/react-responsive-audio-player/releases).
 
 ##Options
 Options can be passed to the AudioPlayer element as props. Currently supported props are:
@@ -125,7 +127,7 @@ body {
 
 ![Audio Player Screenshot](audio_player_example_01.png)
 
-The default stylings for the audio player can be found [here](src/index.scss). It's easy to override them with CSS.
+The default stylings for the audio player can be found [here](https://github.com/benwiley4000/react-responsive-audio-player/blob/master/src/index.scss). It's easy to override them with CSS.
 
 To change the `font-family` for the whole component, use:
 ```
