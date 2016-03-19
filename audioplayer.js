@@ -94,12 +94,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 * Accepts 'autoplayDelayInSeconds' prop (default 0).
 	 *
+	 * Accepts 'gapLengthInSeconds' prop (default 0).
+	 * Specifies gap at end of one track before next
+	 * track begins (ignored for manual skip).
+	 *
 	 * Accepts 'hideBackSkip' prop (default false,
 	 * hides back skip button if true).
 	 *
 	 * Accepts 'stayOnBackSkipThreshold' prop, default 5,
 	 * is number of seconds to progress until pressing back skip
-	 * restarts the current song.
+	 * restarts the current track.
 	 *
 	 * Accepts 'placeAtTop' prop, default false, if true,
 	 * player is placed at top of screen instead of bottom.
@@ -116,10 +120,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    _this.playlist = props.playlist;
 
-	    /* how many seconds must progress before a back skip will
-	     * just restart the current track
-	     */
-	    _this.stayOnBackSkipThreshold = props.stayOnBackSkipThreshold || 5;
 	    /* true if the user is currently dragging the mouse
 	     * to seek a new track position
 	     */
@@ -150,6 +150,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * position from mouse/touch coordinates
 	     */
 	    _this.audioProgressBoundingRect = null;
+
+	    // EventListeners to create on mount and remove on unmount
+	    _this.seekReleaseListener = null;
+	    _this.resizeListener = null;
 	    return _this;
 	  }
 
@@ -160,18 +164,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      __webpack_require__(3);
 
-	      // These listeners are outside the scope of our render method
-	      window.addEventListener('mouseup', this.seek.bind(this));
-	      document.addEventListener('touchend', this.seek.bind(this));
-	      window.addEventListener('resize', this.fetchAudioProgressBoundingRect.bind(this));
-	      this.fetchAudioProgressBoundingRect();
+	      var seekReleaseListener = this.seekReleaseListener = this.seek.bind(this);
+	      window.addEventListener('mouseup', seekReleaseListener);
+	      document.addEventListener('touchend', seekReleaseListener);
+	      var resizeListener = this.resizeListener = this.fetchAudioProgressBoundingRect.bind(this);
+	      window.addEventListener('resize', resizeListener);
+	      resizeListener();
 
-	      /* We'll need to use some tools outside of the React
-	       * paradigm in order to hook up audio things correctly.
-	       */
 	      var audio = this.audio = document.createElement('audio');
 	      audio.preload = 'metadata';
-	      audio.addEventListener('ended', this.skipToNextTrack.bind(this));
+	      audio.addEventListener('ended', function () {
+	        var gapLengthInSeconds = _this2.props.gapLengthInSeconds || 0;
+	        setTimeout(_this2.skipToNextTrack.bind(_this2), gapLengthInSeconds * 1000);
+	      });
 	      audio.addEventListener('timeupdate', this.handleTimeUpdate.bind(this));
 	      audio.addEventListener('loadedmetadata', function () {
 	        _this2.setState({
@@ -193,9 +198,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      // remove event listeners bound outside the scope of our component
+	      window.removeEventListener('mouseup', this.seekReleaseListener);
+	      document.removeEventListener('touchend', this.seekReleaseListener);
+	      window.removeEventListener('resize', this.resizeListener);
+
+	      /* pause the audio element before dereferencing it
+	       * (we can't know when garbage collection will run)
+	       */
+	      this.audio.pause();
+	      this.audio = null;
+	    }
+	  }, {
 	    key: 'componentWillReceiveProps',
 	    value: function componentWillReceiveProps(nextProps) {
-	      this.stayOnBackSkipThreshold = nextProps.stayOnBackSkipThreshold || stayOnBackSkipThreshold;
 	      if (!nextProps.playlist) {
 	        return;
 	      }
@@ -208,6 +226,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'togglePause',
 	    value: function togglePause(value) {
+	      if (!this.audio) {
+	        return;
+	      }
 	      var pause = typeof value === 'boolean' ? value : !this.state.paused;
 	      if (pause) {
 	        this.audio.pause();
@@ -231,6 +252,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function skipToNextTrack(shouldPlay) {
 	      var _this3 = this;
 
+	      if (!this.audio) {
+	        return;
+	      }
 	      this.audio.pause();
 	      if (!this.playlist || !this.playlist.length) {
 	        return;
@@ -256,7 +280,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return;
 	      }
 	      var audio = this.audio;
-	      if (audio.currentTime >= this.stayOnBackSkipThreshold) {
+	      var stayOnBackSkipThreshold = this.props.stayOnBackSkipThreshold;
+	      if (isNaN(stayOnBackSkipThreshold)) {
+	        stayOnBackSkipThreshold = 5;
+	      }
+	      if (audio.currentTime >= stayOnBackSkipThreshold) {
 	        return audio.currentTime = 0;
 	      }
 	      var i = this.currentTrackIndex - 1;
@@ -279,7 +307,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'handleTimeUpdate',
 	    value: function handleTimeUpdate() {
-	      if (!this.seekInProgress) {
+	      if (!this.seekInProgress && this.audio) {
 	        this.setState({
 	          displayedTime: this.audio.currentTime
 	        });
@@ -448,6 +476,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  playlist: React.PropTypes.array,
 	  autoplay: React.PropTypes.bool,
 	  autoplayDelayInSeconds: React.PropTypes.number,
+	  gapLengthInSeconds: React.PropTypes.number,
 	  hideBackSkip: React.PropTypes.bool,
 	  stayOnBackSkipThreshold: React.PropTypes.number,
 	  placeAtTop: React.PropTypes.bool
