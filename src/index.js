@@ -28,12 +28,16 @@ function convertToTime (number) {
  *
  * Accepts 'autoplayDelayInSeconds' prop (default 0).
  *
+ * Accepts 'gapLengthInSeconds' prop (default 0).
+ * Specifies gap at end of one track before next
+ * track begins (ignored for manual skip).
+ *
  * Accepts 'hideBackSkip' prop (default false,
  * hides back skip button if true).
  *
  * Accepts 'stayOnBackSkipThreshold' prop, default 5,
  * is number of seconds to progress until pressing back skip
- * restarts the current song.
+ * restarts the current track.
  *
  * Accepts 'placeAtTop' prop, default false, if true,
  * player is placed at top of screen instead of bottom.
@@ -46,10 +50,6 @@ class AudioPlayer extends React.Component {
 
     this.playlist = props.playlist;
 
-    /* how many seconds must progress before a back skip will
-     * just restart the current track
-     */
-    this.stayOnBackSkipThreshold = props.stayOnBackSkipThreshold || 5;
     /* true if the user is currently dragging the mouse
      * to seek a new track position
      */
@@ -98,7 +98,10 @@ class AudioPlayer extends React.Component {
 
     const audio = this.audio = document.createElement('audio');
     audio.preload = 'metadata';
-    audio.addEventListener('ended', this.skipToNextTrack.bind(this));
+    audio.addEventListener('ended', () => {
+      const gapLengthInSeconds = this.props.gapLengthInSeconds || 0;
+      setTimeout(this.skipToNextTrack.bind(this), gapLengthInSeconds * 1000);
+    });
     audio.addEventListener('timeupdate', this.handleTimeUpdate.bind(this));
     audio.addEventListener('loadedmetadata', () => {
       this.setState({
@@ -134,7 +137,6 @@ class AudioPlayer extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    this.stayOnBackSkipThreshold = nextProps.stayOnBackSkipThreshold || stayOnBackSkipThreshold;
     if (!nextProps.playlist) {
       return;
     }
@@ -199,7 +201,11 @@ class AudioPlayer extends React.Component {
       return;
     }
     const audio = this.audio;
-    if (audio.currentTime >= this.stayOnBackSkipThreshold) {
+    let stayOnBackSkipThreshold = this.props.stayOnBackSkipThreshold;
+    if (isNaN(stayOnBackSkipThreshold)) {
+      stayOnBackSkipThreshold = 5;
+    }
+    if (audio.currentTime >= stayOnBackSkipThreshold) {
       return audio.currentTime = 0;
     }
     let i = this.currentTrackIndex - 1;
@@ -358,6 +364,7 @@ AudioPlayer.propTypes = {
   playlist: React.PropTypes.array,
   autoplay: React.PropTypes.bool,
   autoplayDelayInSeconds: React.PropTypes.number,
+  gapLengthInSeconds: React.PropTypes.number,
   hideBackSkip: React.PropTypes.bool,
   stayOnBackSkipThreshold: React.PropTypes.number,
   placeAtTop: React.PropTypes.bool
