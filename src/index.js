@@ -80,20 +80,22 @@ class AudioPlayer extends React.Component {
      * position from mouse/touch coordinates
      */
     this.audioProgressBoundingRect = null;
+
+    // EventListeners to create on mount and remove on unmount
+    this.seekReleaseListener = null;
+    this.resizeListener = null;
   }
 
   componentDidMount () {
     require('./index.scss');
 
-    // These listeners are outside the scope of our render method
-    window.addEventListener('mouseup', this.seek.bind(this));
-    document.addEventListener('touchend', this.seek.bind(this));
-    window.addEventListener('resize', this.fetchAudioProgressBoundingRect.bind(this));
-    this.fetchAudioProgressBoundingRect();
+    const seekReleaseListener = this.seekReleaseListener = this.seek.bind(this);
+    window.addEventListener('mouseup', seekReleaseListener);
+    document.addEventListener('touchend', seekReleaseListener);
+    const resizeListener = this.resizeListener = this.fetchAudioProgressBoundingRect.bind(this);
+    window.addEventListener('resize', resizeListener);
+    resizeListener();
 
-    /* We'll need to use some tools outside of the React
-     * paradigm in order to hook up audio things correctly.
-     */
     const audio = this.audio = document.createElement('audio');
     audio.preload = 'metadata';
     audio.addEventListener('ended', this.skipToNextTrack.bind(this));
@@ -118,6 +120,19 @@ class AudioPlayer extends React.Component {
     }
   }
 
+  componentWillUnmount () {
+    // remove event listeners bound outside the scope of our component
+    window.removeEventListener('mouseup', this.seekReleaseListener);
+    document.removeEventListener('touchend', this.seekReleaseListener);
+    window.removeEventListener('resize', this.resizeListener);
+
+    /* pause the audio element before dereferencing it
+     * (we can't know when garbage collection will run)
+     */
+    this.audio.pause();
+    this.audio = null;
+  }
+
   componentWillReceiveProps (nextProps) {
     this.stayOnBackSkipThreshold = nextProps.stayOnBackSkipThreshold || stayOnBackSkipThreshold;
     if (!nextProps.playlist) {
@@ -131,6 +146,9 @@ class AudioPlayer extends React.Component {
   }
 
   togglePause (value) {
+    if (!this.audio) {
+      return;
+    }
     const pause = typeof value === 'boolean' ? value : !this.state.paused;
     if (pause) {
       this.audio.pause();
@@ -154,6 +172,9 @@ class AudioPlayer extends React.Component {
   }
 
   skipToNextTrack (shouldPlay) {
+    if (!this.audio) {
+      return;
+    }
     this.audio.pause();
     if (!this.playlist || !this.playlist.length) {
       return;
@@ -198,7 +219,7 @@ class AudioPlayer extends React.Component {
   }
 
   handleTimeUpdate () {
-    if (!this.seekInProgress) {
+    if (!this.seekInProgress && this.audio) {
       this.setState({
         displayedTime: this.audio.currentTime
       });
