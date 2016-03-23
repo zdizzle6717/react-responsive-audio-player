@@ -11,7 +11,7 @@ gulp.task('copyHTML', function () {
 });
  
 gulp.task('browserify', function() {
-  return browserify('./src/js/audioplayer.js')
+  return browserify('./src/audioplayer.js')
     .transform('babelify', { presets: ['es2015', 'react'] })
     .bundle()
     .pipe(source('bundle.js'))
@@ -19,7 +19,7 @@ gulp.task('browserify', function() {
 });
 
 gulp.task('sass', function () {
-  return gulp.src('./src/scss/*.scss')
+  return gulp.src('./src/*.scss')
     .pipe(concat('style.scss'))
     .pipe(sass().on('error', sass.logError))
     .pipe(autoprefixer({ browsers: ['> 2%'] }))
