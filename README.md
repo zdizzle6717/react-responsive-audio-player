@@ -145,7 +145,7 @@ To make the audio player's background color `firebrick`, use:
   background-color: #b22222;
 }
 .audio_player .play_pause_button .triangle_1,
-.audio_player .play_pause_button .tirangle_2 {
+.audio_player .play_pause_button .triangle_2 {
   border-right-color: #b22222;
 }
 ```
