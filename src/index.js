@@ -1,4 +1,5 @@
 const React = require('react');
+const arrayFindIndex = require('array-find-index');
 const classNames = require('classnames');
 
 const log = console.log.bind(console);
@@ -137,11 +138,24 @@ class AudioPlayer extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (!nextProps.playlist) {
-      return;
-    }
+    const currentTrackUrl = (
+      (this.playlist || [])[this.currentTrackIndex] || {}
+    ).url;
     this.playlist = nextProps.playlist;
-    this.currentTrackIndex = -1;
+    this.currentTrackIndex = arrayFindIndex((this.playlist || []), track => {
+      return track.url && currentTrackUrl === track.url;
+    });
+    /* if the track we're already playing is in the new playlist, update the
+     * activeTrackIndex and we're done.
+     */
+    if (this.currentTrackIndex !== -1) {
+      return this.setState({
+        activeTrackIndex: this.currentTrackIndex
+      });
+    }
+    /* otherwise, if our audio element is available, pause and queue up
+     * the new first track.
+     */
     if (this.audio) {
       this.skipToNextTrack(false);
     }
