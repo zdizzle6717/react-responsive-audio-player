@@ -39,12 +39,6 @@ var webpackConfig = {
       commonjs: 'react',
       commonjs2: 'react',
       amd: 'react'
-    },
-    'classnames': {
-      root: 'classNames',
-      commonjs: 'classnames',
-      commonjs2: 'classnames',
-      amd: 'classnames'
     }
   },
   plugins: [
