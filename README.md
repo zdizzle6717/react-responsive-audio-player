@@ -59,17 +59,17 @@ The fastest way to get off the ground with this module is to paste the following
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>React Responsive Audio Player</title>
     <style> html, body { margin: 0; background: lightseagreen; } </style>
-    <!-- audioplayer.css v0.3.0 -->
-    <link rel="stylesheet" href="https://cdn.rawgit.com/benwiley4000/react-responsive-audio-player/66e872d54df1f97a91611e115127bb6a1d3a173a/audioplayer.css">
+    <!-- audioplayer.css v1.0.0-beta.1 -->
+    <link rel="stylesheet" href="https://cdn.rawgit.com/benwiley4000/react-responsive-audio-player/de2276156486bb89116de62f9ec4ccc71917c267/audioplayer.css">
   </head>
   <body>
     <div id="audio_player_container"></div>
 
     <!-- react/react-dom served over CDN -->
-    <script src="https://fb.me/react-0.14.7.js"></script>
-    <script src="https://fb.me/react-dom-0.14.7.js"></script>
-    <!-- audioplayer.js v0.3.0 -->
-    <script src="https://cdn.rawgit.com/benwiley4000/react-responsive-audio-player/66e872d54df1f97a91611e115127bb6a1d3a173a/audioplayer.js"></script>
+    <script src="https://unpkg.com/react@15/dist/react.js"></script>
+    <script src="https://unpkg.com/react-dom@15/dist/react-dom.js"></script>
+    <!-- audioplayer.js v1.0.0-beta.1 -->
+    <script src="https://cdn.rawgit.com/benwiley4000/react-responsive-audio-player/de2276156486bb89116de62f9ec4ccc71917c267/audioplayer.js"></script>
     <script>
       var playlist =
         [{ url: 'song1.mp3', displayText: 'Track 1 - a track to remember' },
@@ -92,7 +92,7 @@ Of course you'll need to include paths to actual audio files, or the player will
 ###Package installation
 If you use [npm](https://www.npmjs.com/) and a front-end package bundling system like [Browserify](http://browserify.org/) or [webpack](https://webpack.github.io/), it's recommended that you install the package and its dependencies in your project:
 ```
-npm install --save react-responsive-audio-player react react-dom
+npm install --save react-responsive-audio-player@beta react react-dom
 ```
 While `react-dom` isn't technically a peer dependency, you'll need it if you plan to place the audio player in the DOM, which you probably will.
 
