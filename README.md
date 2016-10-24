@@ -31,7 +31,7 @@ var playlist =
    { url: 'audio/track2.mp3',
      displayText: 'Some Other Artist - Track 2' }];
 ReactDOM.render(
-  <AudioPlayer playlist={ playlist } hideBackSkip={ true } />,
+  <AudioPlayer playlist={playlist} hideBackSkip={true} />,
   document.getElementById('audio_player_container')
 );
 ```
@@ -68,8 +68,6 @@ The fastest way to get off the ground with this module is to paste the following
     <!-- react/react-dom served over CDN -->
     <script src="https://fb.me/react-0.14.7.js"></script>
     <script src="https://fb.me/react-dom-0.14.7.js"></script>
-    <!-- classnames v2.2.3 -->
-    <script src="https://cdn.rawgit.com/JedWatson/classnames/a6934cd623c1ea2a895575af9c83b08c8bdd3b05/index.js"></script>
     <!-- audioplayer.js v0.3.0 -->
     <script src="https://cdn.rawgit.com/benwiley4000/react-responsive-audio-player/66e872d54df1f97a91611e115127bb6a1d3a173a/audioplayer.js"></script>
     <script>
@@ -77,7 +75,12 @@ The fastest way to get off the ground with this module is to paste the following
         [{ url: 'song1.mp3', displayText: 'Track 1 - a track to remember' },
          { url: 'song2.ogg', displayText: 'Oggs Oggs Oggs' }];
       ReactDOM.render(
-        React.createElement(AudioPlayer, { playlist: playlist, autoplay: true, autoplayDelayInSeconds: 2.1 }),
+        React.createElement(AudioPlayer, {
+          playlist: playlist,
+          autoplay: true,
+          autoplayDelayInSeconds: 2.1,
+          style: { position: 'fixed', bottom: 0 }
+        }),
         document.getElementById('audio_player_container')
       );
     </script>
@@ -89,7 +92,7 @@ Of course you'll need to include paths to actual audio files, or the player will
 ###Package installation
 If you use [npm](https://www.npmjs.com/) and a front-end package bundling system like [Browserify](http://browserify.org/) or [webpack](https://webpack.github.io/), it's recommended that you install the package and its dependencies in your project:
 ```
-npm install --save react-responsive-audio-player classnames react react-dom
+npm install --save react-responsive-audio-player react react-dom
 ```
 While `react-dom` isn't technically a peer dependency, you'll need it if you plan to place the audio player in the DOM, which you probably will.
 
@@ -100,6 +103,7 @@ If you prefer not to use a package bundler, you can find built releases to downl
 
 ##Options
 Options can be passed to the AudioPlayer element as props. Currently supported props are:
+
 * `playlist`: an array containing urls and display text for each of the tracks you wish to play (see above example for format). **undefined** by default.
 
 * `autoplay`: a boolean value (`true`/`false`) that if true will cause the player to begin automatically once mounted. **false** by default.
@@ -114,18 +118,27 @@ Options can be passed to the AudioPlayer element as props. Currently supported p
 
 * `placeAtTop`: a boolean value that if true places the player at the top of the page rather than at the bottom. **false** be default.
 
+* `style`: a React style object which is applied to the outermost div in the component. **undefined** be default.
+
 None of these options is required, though the player will be functionally disabled if no `playlist` prop is provided.
 
 ##Styling
 **IMPORTANT NOTES**
 * In order to use the default stylings you'll need to grab the compiled `audioplayer.css` sheet from the module's `dist/` directory. Again, if you're not using npm, you can get the sheet [here](https://github.com/benwiley4000/react-responsive-audio-player/releases).
-* Include the following code in your own CSS to ensure the audio player takes up the full screen width:
-```
-html,
-body {
-  margin: 0;
-}
-```
+* If you want your audio player to take the full screen width, do the following:
+  * Include the following code in your own CSS:
+  ```
+  html,
+  body {
+    margin: 0;
+  }
+  ```
+  * Give your audio player fixed position styling, e.g.
+  ```
+  <AudioPlayer style={{ position: 'fixed', bottom: 0 }} />
+  ```
+
+Why aren't these styles included by default? See [this discussion](https://github.com/benwiley4000/react-responsive-audio-player/issues/6).
 
 *The default look:*
 
@@ -133,10 +146,10 @@ body {
 
 The default stylings for the audio player can be found [here](https://github.com/benwiley4000/react-responsive-audio-player/blob/master/src/index.scss). It's easy to override them with CSS.
 
-To change the `font-family` for the whole component, use:
+To change the `font-family` for the whole component using CSS, use:
 ```
 .audio_player {
-  font-family: Helvetica,sans-serif;
+  font-family: Helvetica, sans-serif;
 }
 ```
 To make the audio player's background color `firebrick`, use:
@@ -149,3 +162,4 @@ To make the audio player's background color `firebrick`, use:
   border-right-color: #b22222;
 }
 ```
+Alternatively, for styles which only affect the outer element, use [React inline styles](https://facebook.github.io/react/docs/dom-elements.html#style).
