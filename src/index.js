@@ -322,7 +322,8 @@ class AudioPlayer extends React.Component {
     return (
       <div id="audio_player"
            className={ classNames('audio_player', { 'top': this.props.placeAtTop }) }
-           title={ displayText }>
+           title={ displayText }
+           style={ this.props.style }>
 
         <div className="audio_controls">
           <div id="skip_button"
@@ -394,7 +395,8 @@ AudioPlayer.propTypes = {
   gapLengthInSeconds: React.PropTypes.number,
   hideBackSkip: React.PropTypes.bool,
   stayOnBackSkipThreshold: React.PropTypes.number,
-  placeAtTop: React.PropTypes.bool
+  placeAtTop: React.PropTypes.bool,
+  style: React.PropTypes.object
 };
 
 module.exports = AudioPlayer;
