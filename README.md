@@ -92,7 +92,7 @@ Of course you'll need to include paths to actual audio files, or the player will
 ###Package installation
 If you use [npm](https://www.npmjs.com/) and a front-end package bundling system like [Browserify](http://browserify.org/) or [webpack](https://webpack.github.io/), it's recommended that you install the package and its dependencies in your project:
 ```
-npm install --save react-responsive-audio-player@beta react react-dom
+npm install --save react-responsive-audio-player react react-dom
 ```
 While `react-dom` isn't technically a peer dependency, you'll need it if you plan to place the audio player in the DOM, which you probably will.
 
