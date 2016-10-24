@@ -1,4 +1,5 @@
 const React = require('react');
+const arrayFindIndex = require('array-find-index');
 const classNames = require('classnames');
 
 const log = console.log.bind(console);
@@ -48,8 +49,6 @@ class AudioPlayer extends React.Component {
   constructor (props) {
     super(props);
 
-    this.playlist = props.playlist;
-
     /* true if the user is currently dragging the mouse
      * to seek a new track position
      */
@@ -57,7 +56,7 @@ class AudioPlayer extends React.Component {
     // index matching requested track (whether track has loaded or not)
     this.currentTrackIndex = 0;
 
-    this.state = {
+    this.defaultState = {
       /* activeTrackIndex will change to match
        * this.currentTrackIndex once metadata has loaded
        */
@@ -72,6 +71,8 @@ class AudioPlayer extends React.Component {
        */
       displayedTime: 0 
     };
+
+    this.state = this.defaultState;
 
     // html audio element used for playback
     this.audio = null;
@@ -114,7 +115,7 @@ class AudioPlayer extends React.Component {
       });
     });
     audio.addEventListener('stalled', this.togglePause.bind(this, true));
-    if (this.playlist && this.playlist.length) {
+    if (this.props.playlist && this.props.playlist.length) {
       this.updateSource();
       if (this.props.autoplay) {
         const delay = this.props.autoplayDelayInSeconds || 0;
@@ -137,12 +138,36 @@ class AudioPlayer extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (!nextProps.playlist) {
-      return;
+    const newPlaylist = nextProps.playlist;
+    if (!newPlaylist || !newPlaylist.length) {
+      if (this.audio) {
+        this.audio.src = '';
+      }
+      this.currentTrackIndex = 0;
+      return this.setState(this.defaultState);
     }
-    this.playlist = nextProps.playlist;
-    this.currentTrackIndex = -1;
-    if (this.audio) {
+
+    const oldPlaylist = this.props.playlist;
+
+    const currentTrackUrl = ((oldPlaylist || [])[this.currentTrackIndex] || {}).url;
+    this.currentTrackIndex = arrayFindIndex(newPlaylist, track => {
+      return track.url && currentTrackUrl === track.url;
+    });
+    /* if the track we're already playing is in the new playlist, update the
+     * activeTrackIndex.
+     */
+    if (this.currentTrackIndex !== -1) {
+      this.setState({
+        activeTrackIndex: this.currentTrackIndex
+      });
+    }
+  }
+
+  componentDidUpdate () {
+    /* if we loaded a new playlist and reset the current track marker, we
+     * should load up the first one.
+     */
+    if (this.audio && this.currentTrackIndex === -1) {
       this.skipToNextTrack(false);
     }
   }
@@ -158,7 +183,7 @@ class AudioPlayer extends React.Component {
         paused: true
       });
     }
-    if (!this.playlist || !this.playlist.length) {
+    if (!this.props.playlist || !this.props.playlist.length) {
       return;
     }
     try {
@@ -178,11 +203,11 @@ class AudioPlayer extends React.Component {
       return;
     }
     this.audio.pause();
-    if (!this.playlist || !this.playlist.length) {
+    if (!this.props.playlist || !this.props.playlist.length) {
       return;
     }
     let i = this.currentTrackIndex + 1;
-    if (i >= this.playlist.length) {
+    if (i >= this.props.playlist.length) {
       i = 0;
     }
     this.currentTrackIndex = i;
@@ -197,7 +222,7 @@ class AudioPlayer extends React.Component {
   }
 
   backSkip () {
-    if (!this.playlist || !this.playlist.length) {
+    if (!this.props.playlist || !this.props.playlist.length) {
       return;
     }
     const audio = this.audio;
@@ -210,14 +235,14 @@ class AudioPlayer extends React.Component {
     }
     let i = this.currentTrackIndex - 1;
     if (i < 0) {
-      i = this.playlist.length - 1;
+      i = this.props.playlist.length - 1;
     }
     this.currentTrackIndex = i - 1;
     this.skipToNextTrack();
   }
 
   updateSource () {
-    this.audio.src = this.playlist[this.currentTrackIndex].url;
+    this.audio.src = this.props.playlist[this.currentTrackIndex].url;
   }
 
   fetchAudioProgressBoundingRect () {
@@ -233,7 +258,7 @@ class AudioPlayer extends React.Component {
   }
 
   adjustDisplayedTime (event) {
-    if (!this.playlist || !this.playlist.length) {
+    if (!this.props.playlist || !this.props.playlist.length) {
       return;
     }
     // make sure we don't select stuff in the background while seeking
@@ -281,7 +306,9 @@ class AudioPlayer extends React.Component {
 
   render () {
     const activeIndex = this.state.activeTrackIndex;
-    const displayText = activeIndex < 0 ? null : this.playlist[activeIndex].displayText;
+    const displayText = this.props.playlist ? (
+      activeIndex < 0 ? null : this.props.playlist[activeIndex].displayText
+    ) : 'Please load a playlist';
 
     const displayedTime = this.state.displayedTime;
     const duration = this.audio && this.audio.duration || 0;

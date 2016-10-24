@@ -34,6 +34,7 @@
     "react": "0.14.x || 15.x.x"
   },
   "devDependencies": {
+    "array-find-index": "^1.0.2",
     "autoprefixer": "^6.3.3",
     "babel-core": "^6.7.2",
     "babel-loader": "^6.2.4",
