@@ -43,6 +43,9 @@ function convertToTime (number) {
  * Accepts 'placeAtTop' prop, default false, if true,
  * player is placed at top of screen instead of bottom.
  *
+ * Accepts 'style' prop, object, is applied to
+ * outermost div (React styles).
+ *
  */
 class AudioPlayer extends React.Component {
 
