@@ -1,6 +1,6 @@
-const React = require('react');
-const arrayFindIndex = require('array-find-index');
-const classNames = require('classnames');
+import React from 'react';
+import arrayFindIndex from 'array-find-index';
+import classNames from 'classnames';
 
 const log = console.log.bind(console);
 const logError = console.error ? console.error.bind(console) : log;
@@ -90,10 +90,10 @@ class AudioPlayer extends React.Component {
   componentDidMount () {
     require('./index.scss');
 
-    const seekReleaseListener = this.seekReleaseListener = this.seek.bind(this);
+    const seekReleaseListener = this.seekReleaseListener = e => this.seek(e);
     window.addEventListener('mouseup', seekReleaseListener);
     document.addEventListener('touchend', seekReleaseListener);
-    const resizeListener = this.resizeListener = this.fetchAudioProgressBoundingRect.bind(this);
+    const resizeListener = this.resizeListener = () => this.fetchAudioProgressBoundingRect();
     window.addEventListener('resize', resizeListener);
     resizeListener();
 
@@ -101,9 +101,9 @@ class AudioPlayer extends React.Component {
     audio.preload = 'metadata';
     audio.addEventListener('ended', () => {
       const gapLengthInSeconds = this.props.gapLengthInSeconds || 0;
-      setTimeout(this.skipToNextTrack.bind(this), gapLengthInSeconds * 1000);
+      setTimeout(() => this.skipToNextTrack(), gapLengthInSeconds * 1000);
     });
-    audio.addEventListener('timeupdate', this.handleTimeUpdate.bind(this));
+    audio.addEventListener('timeupdate', () => this.handleTimeUpdate());
     audio.addEventListener('loadedmetadata', () => {
       this.setState({
         activeTrackIndex: this.currentTrackIndex
@@ -114,12 +114,12 @@ class AudioPlayer extends React.Component {
         paused: false
       });
     });
-    audio.addEventListener('stalled', this.togglePause.bind(this, true));
+    audio.addEventListener('stalled', () => this.togglePause(true));
     if (this.props.playlist && this.props.playlist.length) {
       this.updateSource();
       if (this.props.autoplay) {
         const delay = this.props.autoplayDelayInSeconds || 0;
-        setTimeout(this.togglePause.bind(this, false), delay * 1000);
+        setTimeout(() => this.togglePause(false), delay * 1000);
       }
     }
   }
@@ -319,28 +319,36 @@ class AudioPlayer extends React.Component {
 
     const progressBarWidth = `${ (displayedTime / duration) * 100 }%`;
 
+    const adjustDisplayedTime = e => this.adjustDisplayedTime(e);
+
     return (
-      <div id="audio_player"
-           className={ classNames('audio_player', { 'top': this.props.placeAtTop }) }
-           title={ displayText }
-           style={ this.props.style }>
+      <div
+        id="audio_player"
+        className={classNames('audio_player', { 'top': this.props.placeAtTop })}
+        title={displayText}
+        style={this.props.style}
+      >
 
         <div className="audio_controls">
-          <div id="skip_button"
-               className={ classNames('skip_button', 'back', 'audio_button', {
-                 'hidden': this.props.hideBackSkip
-               }) }
-               onClick={ this.backSkip.bind(this) }>
+          <div
+            id="skip_button"
+            className={classNames('skip_button back audio_button', {
+              'hidden': this.props.hideBackSkip
+            })}
+            onClick={() => this.backSkip()}
+          >
             <div className="skip_button_inner">
               <div className="right_facing_triangle"></div>
               <div className="right_facing_triangle"></div>
             </div>
           </div>
-          <div id="play_pause_button"
-               className={ classNames('play_pause_button', 'audio_button', {
-                 'paused': this.state.paused
-               }) }
-               onClick={ this.togglePause.bind(this, null) }>
+          <div
+            id="play_pause_button"
+            className={classNames('play_pause_button', 'audio_button', {
+              'paused': this.state.paused
+            })}
+            onClick={() => this.togglePause()}
+          >
             <div className="play_pause_inner">
               <div className="left"></div>
               <div className="right"></div>
@@ -348,9 +356,11 @@ class AudioPlayer extends React.Component {
               <div className="triangle_2"></div>
             </div>
           </div>
-          <div id="skip_button"
-               className="skip_button audio_button"
-               onClick={ this.skipToNextTrack.bind(this, null) }>
+          <div
+            id="skip_button"
+            className="skip_button audio_button"
+            onClick={() => this.skipToNextTrack()}
+          >
             <div className="skip_button_inner">
               <div className="right_facing_triangle"></div>
               <div className="right_facing_triangle"></div>
@@ -358,26 +368,31 @@ class AudioPlayer extends React.Component {
           </div>
         </div>
 
-        <div id="audio_progress_container"
-             className="audio_progress_container"
-             ref={ (ref) => this.audioProgressContainer = ref }
-             onMouseDown={ this.adjustDisplayedTime.bind(this) }
-             onMouseMove={ this.adjustDisplayedTime.bind(this) }
-             onTouchStart={ this.adjustDisplayedTime.bind(this) }
-             onTouchMove={ this.adjustDisplayedTime.bind(this) }>
-          <div id="audio_progress"
-               className="audio_progress"
-               style={ { width: progressBarWidth } }></div>
+        <div
+          id="audio_progress_container"
+          className="audio_progress_container"
+          ref={(ref) => this.audioProgressContainer = ref}
+          onMouseDown={adjustDisplayedTime}
+          onMouseMove={adjustDisplayedTime}
+          onTouchStart={adjustDisplayedTime}
+          onTouchMove={adjustDisplayedTime}
+        >
+          <div
+            id="audio_progress"
+            className="audio_progress"
+            style={{ width: progressBarWidth }}></div>
           <div id="audio_progress_overlay" className="audio_progress_overlay">
             <div className="audio_info_marquee">
               <div id="audio_info" className="audio_info noselect" draggable="false">
-                { displayText }
+                {displayText}
               </div>
             </div>
-            <div id="audio_time_progress"
-                 className="audio_time_progress noselect"
-                 draggable="false">
-              { timeRatio }
+            <div
+              id="audio_time_progress"
+              className="audio_time_progress noselect"
+              draggable="false"
+            >
+              {timeRatio}
             </div>
           </div>
         </div>
