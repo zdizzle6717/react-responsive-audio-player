@@ -8,7 +8,7 @@ See it live at http://benwiley4000.github.io/react-responsive-audio-player/.
 
 ##Usage
 HTML:
-```
+```html
 <!DOCTYPE html>
 <html>
   <head><link rel="stylesheet" href="audioplayer.css"></head>
@@ -19,7 +19,7 @@ HTML:
 </html>
 ```
 JavaScript (with JSX):
-```
+```javascript
 // dist/main.js
 var React = require('react');
 var ReactDOM = require('react-dom');
@@ -36,7 +36,7 @@ ReactDOM.render(
 );
 ```
 JavaScript (without JSX):
-```
+```javascript
 // dist/main.js
 ...
 ReactDOM.render(
@@ -51,7 +51,7 @@ ReactDOM.render(
 ##Getting started
 ###Quick start
 The fastest way to get off the ground with this module is to paste the following code into an HTML file and open it in a web browser:
-```
+```html
 <!DOCTYPE html>
 <html>
   <head>
@@ -127,14 +127,14 @@ None of these options is required, though the player will be functionally disabl
 * In order to use the default stylings you'll need to grab the compiled `audioplayer.css` sheet from the module's `dist/` directory. Again, if you're not using npm, you can get the sheet [here](https://github.com/benwiley4000/react-responsive-audio-player/releases).
 * If you want your audio player to take the full screen width, do the following:
   * Include the following code in your own CSS:
-  ```
+  ```css
   html,
   body {
     margin: 0;
   }
   ```
   * Give your audio player fixed position styling, e.g.
-  ```
+  ```html
   <AudioPlayer style={{ position: 'fixed', bottom: 0 }} />
   ```
 
@@ -147,13 +147,13 @@ Why aren't these styles included by default? See [this discussion](https://githu
 The default stylings for the audio player can be found [here](https://github.com/benwiley4000/react-responsive-audio-player/blob/master/src/index.scss). It's easy to override them with CSS.
 
 To change the `font-family` for the whole component using CSS, use:
-```
+```css
 .audio_player {
   font-family: Helvetica, sans-serif;
 }
 ```
 To make the audio player's background color `firebrick`, use:
-```
+```css
 .audio_player {
   background-color: #b22222;
 }
