@@ -62,11 +62,6 @@
   background-color: #333;
   width: 100%;
 
-  &.top {
-    bottom: initial;
-    top: 0;
-  }
-
   .audio_controls {
     display: flex;
     flex-direction: row;
