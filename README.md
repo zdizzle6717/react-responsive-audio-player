@@ -163,3 +163,7 @@ To make the audio player's background color `firebrick`, use:
 }
 ```
 Alternatively, for styles which only affect the outer element, use [React inline styles](https://facebook.github.io/react/docs/dom-elements.html#style).
+
+#Development
+
+For building and testing instructions, see [CONTRIBUTING.md](CONTRIBUTING.md).
