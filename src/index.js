@@ -40,9 +40,6 @@ function convertToTime (number) {
  * is number of seconds to progress until pressing back skip
  * restarts the current track.
  *
- * Accepts 'placeAtTop' prop, default false, if true,
- * player is placed at top of screen instead of bottom.
- *
  * Accepts 'style' prop, object, is applied to
  * outermost div (React styles).
  *
@@ -327,7 +324,7 @@ class AudioPlayer extends React.Component {
     return (
       <div
         id="audio_player"
-        className={classNames('audio_player', { 'top': this.props.placeAtTop })}
+        className="audio_player"
         title={displayText}
         style={this.props.style}
       >
@@ -413,7 +410,6 @@ AudioPlayer.propTypes = {
   gapLengthInSeconds: React.PropTypes.number,
   hideBackSkip: React.PropTypes.bool,
   stayOnBackSkipThreshold: React.PropTypes.number,
-  placeAtTop: React.PropTypes.bool,
   style: React.PropTypes.object
 };
 
