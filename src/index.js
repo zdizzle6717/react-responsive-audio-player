@@ -324,7 +324,7 @@ class AudioPlayer extends React.Component {
     return (
       <div
         id="audio_player"
-        className={classNames('audio_player')}
+        className="audio_player"
         title={displayText}
         style={this.props.style}
       >
