@@ -107,9 +107,6 @@
   background-color: #333;
   width: 100%;
   /* http://codepen.io/aralon/pen/NqGWXZ */ }
-  .audio_player.top {
-    bottom: initial;
-    top: 0; }
   .audio_player .audio_controls {
     display: -webkit-box;
     display: flex;

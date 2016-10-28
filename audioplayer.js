@@ -116,9 +116,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * is number of seconds to progress until pressing back skip
 	 * restarts the current track.
 	 *
-	 * Accepts 'placeAtTop' prop, default false, if true,
-	 * player is placed at top of screen instead of bottom.
-	 *
 	 * Accepts 'style' prop, object, is applied to
 	 * outermost div (React styles).
 	 *
@@ -438,7 +435,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        'div',
 	        {
 	          id: 'audio_player',
-	          className: (0, _classnames2.default)('audio_player', { 'top': this.props.placeAtTop }),
+	          className: 'audio_player',
 	          title: displayText,
 	          style: this.props.style
 	        },
@@ -554,7 +551,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  gapLengthInSeconds: _react2.default.PropTypes.number,
 	  hideBackSkip: _react2.default.PropTypes.bool,
 	  stayOnBackSkipThreshold: _react2.default.PropTypes.number,
-	  placeAtTop: _react2.default.PropTypes.bool,
 	  style: _react2.default.PropTypes.object
 	};
 
