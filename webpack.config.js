@@ -9,6 +9,7 @@ var webpackConfig = {
   },
   output: {
     path: __dirname + '/dist',
+    publicPath: '/dist',
     libraryTarget: 'umd',
     library: 'AudioPlayer',
     filename: 'audioplayer.js'

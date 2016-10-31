@@ -5,7 +5,7 @@
   "main": "dist/audioplayer.js",
   "scripts": {
     "build": "rimraf dist && webpack --progress",
-    "dev": "rimraf dist && webpack --progress --watch",
+    "dev": "rimraf dist && node devServer.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -44,10 +44,13 @@
     "css-loader": "^0.23.1",
     "extract-text-webpack-plugin": "^1.0.1",
     "node-sass": "^3.4.2",
+    "opn": "^4.0.2",
+    "portfinder": "^1.0.9",
     "postcss-loader": "^0.8.2",
     "rimraf": "^2.5.4",
     "sass-loader": "^3.2.0",
     "style-loader": "^0.13.0",
-    "webpack": "^1.12.14"
+    "webpack": "^1.12.14",
+    "webpack-dev-server": "^1.16.2"
   }
 }
