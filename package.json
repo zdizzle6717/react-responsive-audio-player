@@ -4,8 +4,8 @@
   "description": "A simple, clean, and responsive visual wrapper for the HTML audio tag, built with React.",
   "main": "dist/audioplayer.js",
   "scripts": {
-    "build": "rm -rf dist && webpack --progress",
-    "dev": "rm -rf dist && webpack --progress --watch",
+    "build": "rimraf dist && webpack --progress",
+    "dev": "rimraf dist && webpack --progress --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -45,6 +45,7 @@
     "extract-text-webpack-plugin": "^1.0.1",
     "node-sass": "^3.4.2",
     "postcss-loader": "^0.8.2",
+    "rimraf": "^2.5.4",
     "sass-loader": "^3.2.0",
     "style-loader": "^0.13.0",
     "webpack": "^1.12.14"
