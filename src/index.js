@@ -2,6 +2,8 @@ import React from 'react';
 import arrayFindIndex from 'array-find-index';
 import classNames from 'classnames';
 
+import './index.scss';
+
 const log = console.log.bind(console);
 const logError = console.error ? console.error.bind(console) : log;
 const logWarning = console.warn ? console.warn.bind(console) : log;
@@ -88,8 +90,6 @@ class AudioPlayer extends React.Component {
   }
 
   componentDidMount () {
-    require('./index.scss');
-
     const seekReleaseListener = this.seekReleaseListener = e => this.seek(e);
     window.addEventListener('mouseup', seekReleaseListener);
     document.addEventListener('touchend', seekReleaseListener);
