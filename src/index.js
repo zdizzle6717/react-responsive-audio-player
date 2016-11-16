@@ -38,6 +38,15 @@ function convertToTime (number) {
  * Accepts 'hideBackSkip' prop (default false,
  * hides back skip button if true).
  *
+ * Accepts 'hideForwardSkip' prop (default false,
+ * hides forward skip button if true).
+ *
+ * Accepts 'disableSeek' prop (default false,
+ * disables seeking through the audio if true).
+ *
+ * Accepts 'repeat' prop (default true,
+ * repeats the playlist when finished if true).
+ *
  * Accepts 'stayOnBackSkipThreshold' prop, default 5,
  * is number of seconds to progress until pressing back skip
  * restarts the current track.
@@ -71,7 +80,7 @@ class AudioPlayer extends React.Component {
        * the new time is visually previewed before the
        * audio seeks.
        */
-      displayedTime: 0 
+      displayedTime: 0
     };
 
     this.state = this.defaultState;
@@ -216,6 +225,7 @@ class AudioPlayer extends React.Component {
       displayedTime: 0
     }, () => {
       this.updateSource();
+      if (i === 0 && !this.props.repeat) shouldPlay = false;
       const shouldPause = typeof shouldPlay === 'boolean' ? !shouldPlay : false;
       this.togglePause(shouldPause);
     });
@@ -258,7 +268,7 @@ class AudioPlayer extends React.Component {
   }
 
   adjustDisplayedTime (event) {
-    if (!this.props.playlist || !this.props.playlist.length) {
+    if (!this.props.playlist || !this.props.playlist.length || this.props.disableSeek) {
       return;
     }
     // make sure we don't select stuff in the background while seeking
@@ -358,7 +368,9 @@ class AudioPlayer extends React.Component {
           </div>
           <div
             id="skip_button"
-            className="skip_button audio_button"
+            className={classNames('skip_button audio_button', {
+              'hidden': this.props.hideForwardSkip
+            })}
             onClick={() => this.skipToNextTrack()}
           >
             <div className="skip_button_inner">
@@ -409,8 +421,15 @@ AudioPlayer.propTypes = {
   autoplayDelayInSeconds: React.PropTypes.number,
   gapLengthInSeconds: React.PropTypes.number,
   hideBackSkip: React.PropTypes.bool,
+  hideForwardSkip: React.PropTypes.bool,
+  repeat: React.PropTypes.bool,
+  disableSeek: React.PropTypes.bool,
   stayOnBackSkipThreshold: React.PropTypes.number,
   style: React.PropTypes.object
+};
+
+AudioPlayer.defaultProps = {
+  repeat: true
 };
 
 module.exports = AudioPlayer;
