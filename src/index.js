@@ -44,8 +44,9 @@ function convertToTime (number) {
  * Accepts 'disableSeek' prop (default false,
  * disables seeking through the audio if true).
  *
- * Accepts 'repeat' prop (default true,
- * repeats the playlist when finished if true).
+ * Accepts 'cycle' prop (default true,
+ * starts playing at the beginning of the playlist
+ * when finished if true).
  *
  * Accepts 'stayOnBackSkipThreshold' prop, default 5,
  * is number of seconds to progress until pressing back skip
@@ -225,8 +226,8 @@ class AudioPlayer extends React.Component {
       displayedTime: 0
     }, () => {
       this.updateSource();
-      if (i === 0 && !this.props.repeat) shouldPlay = false;
-      const shouldPause = typeof shouldPlay === 'boolean' ? !shouldPlay : false;
+      const shouldCycle = (this.props.cycle && i === 0);
+      const shouldPause = !shouldCycle || (typeof shouldPlay === 'boolean' ? !shouldPlay : false);
       this.togglePause(shouldPause);
     });
   }
@@ -422,14 +423,14 @@ AudioPlayer.propTypes = {
   gapLengthInSeconds: React.PropTypes.number,
   hideBackSkip: React.PropTypes.bool,
   hideForwardSkip: React.PropTypes.bool,
-  repeat: React.PropTypes.bool,
+  cycle: React.PropTypes.bool,
   disableSeek: React.PropTypes.bool,
   stayOnBackSkipThreshold: React.PropTypes.number,
   style: React.PropTypes.object
 };
 
 AudioPlayer.defaultProps = {
-  repeat: true
+  cycle: true
 };
 
 module.exports = AudioPlayer;

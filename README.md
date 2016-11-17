@@ -122,7 +122,7 @@ Options can be passed to the AudioPlayer element as props. Currently supported p
 
 * `disableSeek`: a boolean value that if true prevents seeking. **false** by default.
 
-* `repeat`: a boolean value that if true continues playing from the beginning after the playlist has completed. **true** by default.
+* `cycle`: a boolean value that if true continues playing from the beginning after the playlist has completed. **true** by default.
 
 * `stayOnBackSkipThreshold`: a number value that represents the number of seconds of progress after which pressing the back button will simply restart the current track. **5** by default.
 
