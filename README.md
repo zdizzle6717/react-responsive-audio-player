@@ -118,6 +118,12 @@ Options can be passed to the AudioPlayer element as props. Currently supported p
 
 * `hideBackSkip`: a boolean value that if true disables the back skip button by hiding it from view. **false** by default.
 
+* `hideForwardSkip`: a boolean value that if true disables the forward skip button by hiding it from view. **false** by default.
+
+* `disableSeek`: a boolean value that if true prevents seeking. **false** by default.
+
+* `cycle`: a boolean value that if true continues playing from the beginning after the playlist has completed. **true** by default.
+
 * `stayOnBackSkipThreshold`: a number value that represents the number of seconds of progress after which pressing the back button will simply restart the current track. **5** by default.
 
 * `style`: a React style object which is applied to the outermost div in the component. **undefined** be default.
