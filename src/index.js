@@ -55,6 +55,8 @@ function convertToTime (number) {
  * Accepts 'style' prop, object, is applied to
  * outermost div (React styles).
  *
+ * Accepts 'onMediaEvent' prop, an object used for
+ * listening to media events on the underlying audio element.
  */
 class AudioPlayer extends React.Component {
 
@@ -132,6 +134,7 @@ class AudioPlayer extends React.Component {
         setTimeout(() => this.togglePause(false), delay * 1000);
       }
     }
+    this.addMediaEventListeners(this.props.onMediaEvent);
   }
 
   componentWillUnmount () {
@@ -139,6 +142,7 @@ class AudioPlayer extends React.Component {
     window.removeEventListener('mouseup', this.seekReleaseListener);
     document.removeEventListener('touchend', this.seekReleaseListener);
     window.removeEventListener('resize', this.resizeListener);
+    this.removeMediaEventListeners(this.props.onMediaEvent);
 
     /* pause the audio element before dereferencing it
      * (we can't know when garbage collection will run)
@@ -148,6 +152,10 @@ class AudioPlayer extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    // Update media event listeners that may have cchanged
+    this.removeMediaEventListeners(this.props.onMediaEvent);
+    this.addMediaEventListeners(nextProps.onMediaEvent);
+
     const newPlaylist = nextProps.playlist;
     if (!newPlaylist || !newPlaylist.length) {
       if (this.audio) {
@@ -170,6 +178,24 @@ class AudioPlayer extends React.Component {
       this.setState({
         activeTrackIndex: this.currentTrackIndex
       });
+    }
+  }
+
+  addMediaEventListeners (mediaEvents) {
+    if (!mediaEvents) {
+      return;
+    }
+    for (let type in mediaEvents) {
+      this.audio.addEventListener(type, mediaEvents[type]);
+    }
+  }
+
+  removeMediaEventListeners (mediaEvents) {
+    if (!mediaEvents) {
+      return;
+    }
+    for (let type in mediaEvents) {
+      this.audio.removeEventListener(type, mediaEvents[type]);
     }
   }
 
@@ -426,7 +452,8 @@ AudioPlayer.propTypes = {
   cycle: React.PropTypes.bool,
   disableSeek: React.PropTypes.bool,
   stayOnBackSkipThreshold: React.PropTypes.number,
-  style: React.PropTypes.object
+  style: React.PropTypes.object,
+  onMediaEvent: React.PropTypes.object
 };
 
 AudioPlayer.defaultProps = {

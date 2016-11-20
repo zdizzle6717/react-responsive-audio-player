@@ -10,7 +10,7 @@
       body {
         margin: 0;
         background: gold;
-      } 
+      }
       .demo {
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
       }
@@ -51,7 +51,15 @@
         React.createElement(AudioPlayer, {
           playlist: playlist,
           autoplay: true,
-          style: { position: 'fixed', bottom: 0 }
+          style: { position: 'fixed', bottom: 0 },
+          onMediaEvent: {
+            'playing': function(e) {
+              console.log('Playback has started');
+            },
+            'pause': function(e) {
+              console.log('Playback was paused');
+            }
+          }
         }),
         document.getElementById('audio_player_container')
       );

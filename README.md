@@ -126,9 +126,11 @@ Options can be passed to the AudioPlayer element as props. Currently supported p
 
 * `stayOnBackSkipThreshold`: a number value that represents the number of seconds of progress after which pressing the back button will simply restart the current track. **5** by default.
 
-* `style`: a React style object which is applied to the outermost div in the component. **undefined** be default.
+* `style`: a React style object which is applied to the outermost div in the component. **undefined** by default.
 
-None of these options is required, though the player will be functionally disabled if no `playlist` prop is provided.
+* `onMediaEvent`: An object where the keys are [media event types](https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Media_events) and the values are callback functions. **undefined** by default.
+
+None of these options are required, though the player will be functionally disabled if no `playlist` prop is provided.
 
 ##Styling
 **IMPORTANT NOTES**
