@@ -57,6 +57,11 @@ function convertToTime (number) {
  *
  * Accepts 'onMediaEvent' prop, an object used for
  * listening to media events on the underlying audio element.
+ *
+ * Accepts 'audioElementRef' prop, a function called after
+ * the component mounts and before it unmounts with the
+ * internally-referenced HTML audio element as its only parameter.
+ * Similar to: https://facebook.github.io/react/docs/refs-and-the-dom.html
  */
 class AudioPlayer extends React.Component {
 
@@ -135,6 +140,10 @@ class AudioPlayer extends React.Component {
       }
     }
     this.addMediaEventListeners(this.props.onMediaEvent);
+
+    if (this.props.audioElementRef) {
+      this.props.audioElementRef(audio);
+    }
   }
 
   componentWillUnmount () {
@@ -144,11 +153,13 @@ class AudioPlayer extends React.Component {
     window.removeEventListener('resize', this.resizeListener);
     this.removeMediaEventListeners(this.props.onMediaEvent);
 
-    /* pause the audio element before dereferencing it
+    /* pause the audio element before we unmount
      * (we can't know when garbage collection will run)
      */
     this.audio.pause();
-    this.audio = null;
+    if (this.props.audioElementRef) {
+      this.props.audioElementRef(this.audio);
+    }
   }
 
   componentWillReceiveProps (nextProps) {
@@ -459,7 +470,8 @@ AudioPlayer.propTypes = {
   disableSeek: React.PropTypes.bool,
   stayOnBackSkipThreshold: React.PropTypes.number,
   style: React.PropTypes.object,
-  onMediaEvent: React.PropTypes.object
+  onMediaEvent: React.PropTypes.object,
+  audioElementRef: React.PropTypes.func
 };
 
 AudioPlayer.defaultProps = {

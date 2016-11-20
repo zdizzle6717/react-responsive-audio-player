@@ -130,6 +130,8 @@ Options can be passed to the AudioPlayer element as props. Currently supported p
 
 * `onMediaEvent`: An object where the keys are [media event types](https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Media_events) and the values are callback functions. **undefined** by default.
 
+* `audioElementRef`: A callback function called after the component mounts and before it unmounts. Similar to [React ref callback prop](https://facebook.github.io/react/docs/refs-and-the-dom.html#the-ref-callback-attribute) but its only parameter is the internally-referenced HTML audio element, not the component itself. **undefined** by default. *NOTE:* This ref should not be used for audio element event listeners; use `onMediaEvent`.
+
 None of these options are required, though the player will be functionally disabled if no `playlist` prop is provided.
 
 ##Styling

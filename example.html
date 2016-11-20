@@ -47,17 +47,21 @@
           displayText: 'Mountain King'
         }
       ];
+      var audioElement = {};
       ReactDOM.render(
         React.createElement(AudioPlayer, {
           playlist: playlist,
           autoplay: true,
           style: { position: 'fixed', bottom: 0 },
+          audioElementRef: function (elem) {
+            audioElement = elem;
+          },
           onMediaEvent: {
-            'playing': function(e) {
-              console.log('Playback has started');
+            'playing': function (e) {
+              console.log('Playback has started', audioElement.src);
             },
-            'pause': function(e) {
-              console.log('Playback was paused');
+            'pause': function (e) {
+              console.log('Playback was paused', audioElement.src);
             }
           }
         }),
