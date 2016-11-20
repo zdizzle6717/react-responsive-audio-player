@@ -152,7 +152,7 @@ class AudioPlayer extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    // Update media event listeners that may have cchanged
+    // Update media event listeners that may have changed
     this.removeMediaEventListeners(this.props.onMediaEvent);
     this.addMediaEventListeners(nextProps.onMediaEvent);
 
@@ -185,18 +185,24 @@ class AudioPlayer extends React.Component {
     if (!mediaEvents) {
       return;
     }
-    for (let type in mediaEvents) {
+    Object.keys(mediaEvents).forEach((type) => {
+      if (typeof mediaEvents[type] !== 'function') {
+        return;
+      }
       this.audio.addEventListener(type, mediaEvents[type]);
-    }
+    });
   }
 
   removeMediaEventListeners (mediaEvents) {
     if (!mediaEvents) {
       return;
     }
-    for (let type in mediaEvents) {
+    Object.keys(mediaEvents).forEach((type) => {
+      if (typeof mediaEvents[type] !== 'function') {
+        return;
+      }
       this.audio.removeEventListener(type, mediaEvents[type]);
-    }
+    });
   }
 
   componentDidUpdate () {
