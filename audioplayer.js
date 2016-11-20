@@ -44,7 +44,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.c = installedModules;
 
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
+/******/ 	__webpack_require__.p = "/dist";
 
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(0);
@@ -69,6 +69,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _classnames = __webpack_require__(3);
 
 	var _classnames2 = _interopRequireDefault(_classnames);
+
+	__webpack_require__(4);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -112,6 +114,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Accepts 'hideBackSkip' prop (default false,
 	 * hides back skip button if true).
 	 *
+	 * Accepts 'hideForwardSkip' prop (default false,
+	 * hides forward skip button if true).
+	 *
+	 * Accepts 'disableSeek' prop (default false,
+	 * disables seeking through the audio if true).
+	 *
+	 * Accepts 'cycle' prop (default true,
+	 * starts playing at the beginning of the playlist
+	 * when finished if true).
+	 *
 	 * Accepts 'stayOnBackSkipThreshold' prop, default 5,
 	 * is number of seconds to progress until pressing back skip
 	 * restarts the current track.
@@ -119,6 +131,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Accepts 'style' prop, object, is applied to
 	 * outermost div (React styles).
 	 *
+	 * Accepts 'onMediaEvent' prop, an object used for
+	 * listening to media events on the underlying audio element.
+	 *
+	 * Accepts 'audioElementRef' prop, a function called after
+	 * the component mounts and before it unmounts with the
+	 * internally-referenced HTML audio element as its only parameter.
+	 * Similar to: https://facebook.github.io/react/docs/refs-and-the-dom.html
 	 */
 
 	var AudioPlayer = function (_React$Component) {
@@ -173,8 +192,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function componentDidMount() {
 	      var _this2 = this;
 
-	      __webpack_require__(4);
-
 	      var seekReleaseListener = this.seekReleaseListener = function (e) {
 	        return _this2.seek(e);
 	      };
@@ -219,6 +236,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	          }, delay * 1000);
 	        }
 	      }
+	      this.addMediaEventListeners(this.props.onMediaEvent);
+
+	      if (this.props.audioElementRef) {
+	        this.props.audioElementRef(audio);
+	      }
 	    }
 	  }, {
 	    key: 'componentWillUnmount',
@@ -227,16 +249,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	      window.removeEventListener('mouseup', this.seekReleaseListener);
 	      document.removeEventListener('touchend', this.seekReleaseListener);
 	      window.removeEventListener('resize', this.resizeListener);
+	      this.removeMediaEventListeners(this.props.onMediaEvent);
 
-	      /* pause the audio element before dereferencing it
+	      /* pause the audio element before we unmount
 	       * (we can't know when garbage collection will run)
 	       */
 	      this.audio.pause();
-	      this.audio = null;
+	      if (this.props.audioElementRef) {
+	        this.props.audioElementRef(this.audio);
+	      }
 	    }
 	  }, {
 	    key: 'componentWillReceiveProps',
 	    value: function componentWillReceiveProps(nextProps) {
+	      // Update media event listeners that may have changed
+	      this.removeMediaEventListeners(this.props.onMediaEvent);
+	      this.addMediaEventListeners(nextProps.onMediaEvent);
+
 	      var newPlaylist = nextProps.playlist;
 	      if (!newPlaylist || !newPlaylist.length) {
 	        if (this.audio) {
@@ -260,6 +289,36 @@ return /******/ (function(modules) { // webpackBootstrap
 	          activeTrackIndex: this.currentTrackIndex
 	        });
 	      }
+	    }
+	  }, {
+	    key: 'addMediaEventListeners',
+	    value: function addMediaEventListeners(mediaEvents) {
+	      var _this3 = this;
+
+	      if (!mediaEvents) {
+	        return;
+	      }
+	      Object.keys(mediaEvents).forEach(function (type) {
+	        if (typeof mediaEvents[type] !== 'function') {
+	          return;
+	        }
+	        _this3.audio.addEventListener(type, mediaEvents[type]);
+	      });
+	    }
+	  }, {
+	    key: 'removeMediaEventListeners',
+	    value: function removeMediaEventListeners(mediaEvents) {
+	      var _this4 = this;
+
+	      if (!mediaEvents) {
+	        return;
+	      }
+	      Object.keys(mediaEvents).forEach(function (type) {
+	        if (typeof mediaEvents[type] !== 'function') {
+	          return;
+	        }
+	        _this4.audio.removeEventListener(type, mediaEvents[type]);
+	      });
 	    }
 	  }, {
 	    key: 'componentDidUpdate',
@@ -298,7 +357,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'skipToNextTrack',
 	    value: function skipToNextTrack(shouldPlay) {
-	      var _this3 = this;
+	      var _this5 = this;
 
 	      if (!this.audio) {
 	        return;
@@ -316,9 +375,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        activeTrackIndex: -1,
 	        displayedTime: 0
 	      }, function () {
-	        _this3.updateSource();
-	        var shouldPause = typeof shouldPlay === 'boolean' ? !shouldPlay : false;
-	        _this3.togglePause(shouldPause);
+	        _this5.updateSource();
+	        var shouldPauseOnCycle = !_this5.props.cycle && i === 0;
+	        var shouldPause = shouldPauseOnCycle || (typeof shouldPlay === 'boolean' ? !shouldPlay : false);
+	        _this5.togglePause(shouldPause);
 	      });
 	    }
 	  }, {
@@ -364,7 +424,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'adjustDisplayedTime',
 	    value: function adjustDisplayedTime(event) {
-	      if (!this.props.playlist || !this.props.playlist.length) {
+	      if (!this.props.playlist || !this.props.playlist.length || this.props.disableSeek) {
 	        return;
 	      }
 	      // make sure we don't select stuff in the background while seeking
@@ -413,7 +473,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this4 = this;
+	      var _this6 = this;
 
 	      var activeIndex = this.state.activeTrackIndex;
 	      var displayText = this.props.playlist ? activeIndex < 0 ? null : this.props.playlist[activeIndex].displayText : 'Please load a playlist';
@@ -428,7 +488,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var progressBarWidth = displayedTime / duration * 100 + '%';
 
 	      var adjustDisplayedTime = function adjustDisplayedTime(e) {
-	        return _this4.adjustDisplayedTime(e);
+	        return _this6.adjustDisplayedTime(e);
 	      };
 
 	      return _react2.default.createElement(
@@ -450,7 +510,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                'hidden': this.props.hideBackSkip
 	              }),
 	              onClick: function onClick() {
-	                return _this4.backSkip();
+	                return _this6.backSkip();
 	              }
 	            },
 	            _react2.default.createElement(
@@ -468,7 +528,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                'paused': this.state.paused
 	              }),
 	              onClick: function onClick() {
-	                return _this4.togglePause();
+	                return _this6.togglePause();
 	              }
 	            },
 	            _react2.default.createElement(
@@ -484,9 +544,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	            'div',
 	            {
 	              id: 'skip_button',
-	              className: 'skip_button audio_button',
+	              className: (0, _classnames2.default)('skip_button audio_button', {
+	                'hidden': this.props.hideForwardSkip
+	              }),
 	              onClick: function onClick() {
-	                return _this4.skipToNextTrack();
+	                return _this6.skipToNextTrack();
 	              }
 	            },
 	            _react2.default.createElement(
@@ -503,7 +565,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            id: 'audio_progress_container',
 	            className: 'audio_progress_container',
 	            ref: function ref(_ref) {
-	              return _this4.audioProgressContainer = _ref;
+	              return _this6.audioProgressContainer = _ref;
 	            },
 	            onMouseDown: adjustDisplayedTime,
 	            onMouseMove: adjustDisplayedTime,
@@ -550,8 +612,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	  autoplayDelayInSeconds: _react2.default.PropTypes.number,
 	  gapLengthInSeconds: _react2.default.PropTypes.number,
 	  hideBackSkip: _react2.default.PropTypes.bool,
+	  hideForwardSkip: _react2.default.PropTypes.bool,
+	  cycle: _react2.default.PropTypes.bool,
+	  disableSeek: _react2.default.PropTypes.bool,
 	  stayOnBackSkipThreshold: _react2.default.PropTypes.number,
-	  style: _react2.default.PropTypes.object
+	  style: _react2.default.PropTypes.object,
+	  onMediaEvent: _react2.default.PropTypes.object,
+	  audioElementRef: _react2.default.PropTypes.func
+	};
+
+	AudioPlayer.defaultProps = {
+	  cycle: true
 	};
 
 	module.exports = AudioPlayer;
