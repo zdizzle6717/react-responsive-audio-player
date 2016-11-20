@@ -226,8 +226,8 @@ class AudioPlayer extends React.Component {
       displayedTime: 0
     }, () => {
       this.updateSource();
-      const shouldCycle = (this.props.cycle && i === 0);
-      const shouldPause = !shouldCycle || (typeof shouldPlay === 'boolean' ? !shouldPlay : false);
+      const shouldPauseOnCycle = (!this.props.cycle && i === 0);
+      const shouldPause = shouldPauseOnCycle || (typeof shouldPlay === 'boolean' ? !shouldPlay : false);
       this.togglePause(shouldPause);
     });
   }
