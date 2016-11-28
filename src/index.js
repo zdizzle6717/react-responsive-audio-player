@@ -156,12 +156,12 @@ class AudioPlayer extends React.Component {
     window.removeEventListener('resize', this.resizeListener);
 
     // remove event listeners on the audio element
-    audio.removeEventListener('play', this.audioPlayListener);
-    audio.removeEventListener('pause', this.audioPauseListener);
-    audio.removeEventListener('ended', this.audioEndListener);
-    audio.removeEventListener('stalled', this.audioStallListener);
-    audio.removeEventListener('timeupdate', this.audioTimeUpdateListener);
-    audio.removeEventListener('loadedmetadata', this.audioMetadataLoadedListener);
+    this.audio.removeEventListener('play', this.audioPlayListener);
+    this.audio.removeEventListener('pause', this.audioPauseListener);
+    this.audio.removeEventListener('ended', this.audioEndListener);
+    this.audio.removeEventListener('stalled', this.audioStallListener);
+    this.audio.removeEventListener('timeupdate', this.audioTimeUpdateListener);
+    this.audio.removeEventListener('loadedmetadata', this.audioMetadataLoadedListener);
     this.removeMediaEventListeners(this.props.onMediaEvent);
 
     // pause the audio element before we unmount
