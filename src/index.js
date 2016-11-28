@@ -101,42 +101,41 @@ class AudioPlayer extends React.Component {
      */
     this.audioProgressBoundingRect = null;
 
-    // EventListeners to create on mount and remove on unmount
-    this.seekReleaseListener = null;
-    this.resizeListener = null;
+    // event listeners to add on mount and remove on unmount
+    this.seekReleaseListener = e => this.seek(e);
+    this.resizeListener = () => this.fetchAudioProgressBoundingRect();
+    this.audioPlayListener = () => this.setState({ paused: false });
+    this.audioPauseListener = () => this.setState({ paused: true });
+    this.audioEndListener = () => {
+      const gapLengthInSeconds = this.props.gapLengthInSeconds || 0;
+      setTimeout(() => this.skipToNextTrack(), gapLengthInSeconds * 1000);
+    };
+    this.audioStallListener = () => this.togglePause(true);
+    this.audioTimeUpdateListener = () => this.handleTimeUpdate();
+    this.audioMetadataLoadedListener = () => this.setState({
+      activeTrackIndex: this.currentTrackIndex
+    });
   }
 
   componentDidMount () {
-    const seekReleaseListener = this.seekReleaseListener = e => this.seek(e);
-    window.addEventListener('mouseup', seekReleaseListener);
-    document.addEventListener('touchend', seekReleaseListener);
-    const resizeListener = this.resizeListener = () => this.fetchAudioProgressBoundingRect();
-    window.addEventListener('resize', resizeListener);
-    resizeListener();
+    // add event listeners bound outside the scope of our component
+    window.addEventListener('mouseup', this.seekReleaseListener);
+    document.addEventListener('touchend', this.seekReleaseListener);
+    window.addEventListener('resize', this.resizeListener);
+    this.resizeListener();
 
     const audio = this.audio = document.createElement('audio');
+
+    // add event listeners on the audio element
     audio.preload = 'metadata';
-    audio.addEventListener('ended', () => {
-      const gapLengthInSeconds = this.props.gapLengthInSeconds || 0;
-      setTimeout(() => this.skipToNextTrack(), gapLengthInSeconds * 1000);
-    });
-    audio.addEventListener('timeupdate', () => this.handleTimeUpdate());
-    audio.addEventListener('loadedmetadata', () => {
-      this.setState({
-        activeTrackIndex: this.currentTrackIndex
-      });
-    });
-    audio.addEventListener('play', () => {
-      this.setState({
-        paused: false
-      });
-    });
-    audio.addEventListener('pause', () => {
-      this.setState({
-        paused: true
-      });
-    });
-    audio.addEventListener('stalled', () => this.togglePause(true));
+    audio.addEventListener('play', this.audioPlayListener);
+    audio.addEventListener('pause', this.audioPauseListener);
+    audio.addEventListener('ended', this.audioEndListener);
+    audio.addEventListener('stalled', this.audioStallListener);
+    audio.addEventListener('timeupdate', this.audioTimeUpdateListener);
+    audio.addEventListener('loadedmetadata', this.audioMetadataLoadedListener);
+    this.addMediaEventListeners(this.props.onMediaEvent);
+
     if (this.props.playlist && this.props.playlist.length) {
       this.updateSource();
       if (this.props.autoplay) {
@@ -144,7 +143,6 @@ class AudioPlayer extends React.Component {
         setTimeout(() => this.togglePause(false), delay * 1000);
       }
     }
-    this.addMediaEventListeners(this.props.onMediaEvent);
 
     if (this.props.audioElementRef) {
       this.props.audioElementRef(audio);
@@ -156,12 +154,19 @@ class AudioPlayer extends React.Component {
     window.removeEventListener('mouseup', this.seekReleaseListener);
     document.removeEventListener('touchend', this.seekReleaseListener);
     window.removeEventListener('resize', this.resizeListener);
+
+    // remove event listeners on the audio element
+    audio.removeEventListener('play', this.audioPlayListener);
+    audio.removeEventListener('pause', this.audioPauseListener);
+    audio.removeEventListener('ended', this.audioEndListener);
+    audio.removeEventListener('stalled', this.audioStallListener);
+    audio.removeEventListener('timeupdate', this.audioTimeUpdateListener);
+    audio.removeEventListener('loadedmetadata', this.audioMetadataLoadedListener);
     this.removeMediaEventListeners(this.props.onMediaEvent);
 
-    /* pause the audio element before we unmount
-     * (we can't know when garbage collection will run)
-     */
+    // pause the audio element before we unmount
     this.audio.pause();
+
     if (this.props.audioElementRef) {
       this.props.audioElementRef(this.audio);
     }
