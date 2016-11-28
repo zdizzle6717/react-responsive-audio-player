@@ -196,7 +196,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    _this.audioEndListener = function () {
 	      var gapLengthInSeconds = _this.props.gapLengthInSeconds || 0;
-	      setTimeout(function () {
+	      clearTimeout(_this.gapLengthTimeout);
+	      _this.gapLengthTimeout = setTimeout(function () {
 	        return _this.skipToNextTrack();
 	      }, gapLengthInSeconds * 1000);
 	    };
@@ -241,7 +242,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.updateSource();
 	        if (this.props.autoplay) {
 	          var delay = this.props.autoplayDelayInSeconds || 0;
-	          setTimeout(function () {
+	          clearTimeout(this.delayTimeout);
+	          this.delayTimeout = setTimeout(function () {
 	            return _this2.togglePause(false);
 	          }, delay * 1000);
 	        }
@@ -260,13 +262,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	      window.removeEventListener('resize', this.resizeListener);
 
 	      // remove event listeners on the audio element
-	      audio.removeEventListener('play', this.audioPlayListener);
-	      audio.removeEventListener('pause', this.audioPauseListener);
-	      audio.removeEventListener('ended', this.audioEndListener);
-	      audio.removeEventListener('stalled', this.audioStallListener);
-	      audio.removeEventListener('timeupdate', this.audioTimeUpdateListener);
-	      audio.removeEventListener('loadedmetadata', this.audioMetadataLoadedListener);
+	      this.audio.removeEventListener('play', this.audioPlayListener);
+	      this.audio.removeEventListener('pause', this.audioPauseListener);
+	      this.audio.removeEventListener('ended', this.audioEndListener);
+	      this.audio.removeEventListener('stalled', this.audioStallListener);
+	      this.audio.removeEventListener('timeupdate', this.audioTimeUpdateListener);
+	      this.audio.removeEventListener('loadedmetadata', this.audioMetadataLoadedListener);
 	      this.removeMediaEventListeners(this.props.onMediaEvent);
+	      clearTimeout(this.gapLengthTimeout);
+	      clearTimeout(this.delayTimeout);
 
 	      // pause the audio element before we unmount
 	      this.audio.pause();
