@@ -131,6 +131,11 @@ class AudioPlayer extends React.Component {
         paused: false
       });
     });
+    audio.addEventListener('pause', () => {
+      this.setState({
+        paused: true
+      });
+    });
     audio.addEventListener('stalled', () => this.togglePause(true));
     if (this.props.playlist && this.props.playlist.length) {
       this.updateSource();
@@ -231,10 +236,7 @@ class AudioPlayer extends React.Component {
     }
     const pause = typeof value === 'boolean' ? value : !this.state.paused;
     if (pause) {
-      this.audio.pause();
-      return this.setState({
-        paused: true
-      });
+      return this.audio.pause();
     }
     if (!this.props.playlist || !this.props.playlist.length) {
       return;
