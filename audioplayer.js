@@ -181,9 +181,36 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    _this.audioProgressBoundingRect = null;
 
-	    // EventListeners to create on mount and remove on unmount
-	    _this.seekReleaseListener = null;
-	    _this.resizeListener = null;
+	    // event listeners to add on mount and remove on unmount
+	    _this.seekReleaseListener = function (e) {
+	      return _this.seek(e);
+	    };
+	    _this.resizeListener = function () {
+	      return _this.fetchAudioProgressBoundingRect();
+	    };
+	    _this.audioPlayListener = function () {
+	      return _this.setState({ paused: false });
+	    };
+	    _this.audioPauseListener = function () {
+	      return _this.setState({ paused: true });
+	    };
+	    _this.audioEndListener = function () {
+	      var gapLengthInSeconds = _this.props.gapLengthInSeconds || 0;
+	      setTimeout(function () {
+	        return _this.skipToNextTrack();
+	      }, gapLengthInSeconds * 1000);
+	    };
+	    _this.audioStallListener = function () {
+	      return _this.togglePause(true);
+	    };
+	    _this.audioTimeUpdateListener = function () {
+	      return _this.handleTimeUpdate();
+	    };
+	    _this.audioMetadataLoadedListener = function () {
+	      return _this.setState({
+	        activeTrackIndex: _this.currentTrackIndex
+	      });
+	    };
 	    return _this;
 	  }
 
@@ -192,41 +219,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function componentDidMount() {
 	      var _this2 = this;
 
-	      var seekReleaseListener = this.seekReleaseListener = function (e) {
-	        return _this2.seek(e);
-	      };
-	      window.addEventListener('mouseup', seekReleaseListener);
-	      document.addEventListener('touchend', seekReleaseListener);
-	      var resizeListener = this.resizeListener = function () {
-	        return _this2.fetchAudioProgressBoundingRect();
-	      };
-	      window.addEventListener('resize', resizeListener);
-	      resizeListener();
+	      // add event listeners bound outside the scope of our component
+	      window.addEventListener('mouseup', this.seekReleaseListener);
+	      document.addEventListener('touchend', this.seekReleaseListener);
+	      window.addEventListener('resize', this.resizeListener);
+	      this.resizeListener();
 
 	      var audio = this.audio = document.createElement('audio');
+
+	      // add event listeners on the audio element
 	      audio.preload = 'metadata';
-	      audio.addEventListener('ended', function () {
-	        var gapLengthInSeconds = _this2.props.gapLengthInSeconds || 0;
-	        setTimeout(function () {
-	          return _this2.skipToNextTrack();
-	        }, gapLengthInSeconds * 1000);
-	      });
-	      audio.addEventListener('timeupdate', function () {
-	        return _this2.handleTimeUpdate();
-	      });
-	      audio.addEventListener('loadedmetadata', function () {
-	        _this2.setState({
-	          activeTrackIndex: _this2.currentTrackIndex
-	        });
-	      });
-	      audio.addEventListener('play', function () {
-	        _this2.setState({
-	          paused: false
-	        });
-	      });
-	      audio.addEventListener('stalled', function () {
-	        return _this2.togglePause(true);
-	      });
+	      audio.addEventListener('play', this.audioPlayListener);
+	      audio.addEventListener('pause', this.audioPauseListener);
+	      audio.addEventListener('ended', this.audioEndListener);
+	      audio.addEventListener('stalled', this.audioStallListener);
+	      audio.addEventListener('timeupdate', this.audioTimeUpdateListener);
+	      audio.addEventListener('loadedmetadata', this.audioMetadataLoadedListener);
+	      this.addMediaEventListeners(this.props.onMediaEvent);
+
 	      if (this.props.playlist && this.props.playlist.length) {
 	        this.updateSource();
 	        if (this.props.autoplay) {
@@ -236,7 +246,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	          }, delay * 1000);
 	        }
 	      }
-	      this.addMediaEventListeners(this.props.onMediaEvent);
 
 	      if (this.props.audioElementRef) {
 	        this.props.audioElementRef(audio);
@@ -249,12 +258,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	      window.removeEventListener('mouseup', this.seekReleaseListener);
 	      document.removeEventListener('touchend', this.seekReleaseListener);
 	      window.removeEventListener('resize', this.resizeListener);
+
+	      // remove event listeners on the audio element
+	      audio.removeEventListener('play', this.audioPlayListener);
+	      audio.removeEventListener('pause', this.audioPauseListener);
+	      audio.removeEventListener('ended', this.audioEndListener);
+	      audio.removeEventListener('stalled', this.audioStallListener);
+	      audio.removeEventListener('timeupdate', this.audioTimeUpdateListener);
+	      audio.removeEventListener('loadedmetadata', this.audioMetadataLoadedListener);
 	      this.removeMediaEventListeners(this.props.onMediaEvent);
 
-	      /* pause the audio element before we unmount
-	       * (we can't know when garbage collection will run)
-	       */
+	      // pause the audio element before we unmount
 	      this.audio.pause();
+
 	      if (this.props.audioElementRef) {
 	        this.props.audioElementRef(this.audio);
 	      }
@@ -338,10 +354,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	      var pause = typeof value === 'boolean' ? value : !this.state.paused;
 	      if (pause) {
-	        this.audio.pause();
-	        return this.setState({
-	          paused: true
-	        });
+	        return this.audio.pause();
 	      }
 	      if (!this.props.playlist || !this.props.playlist.length) {
 	        return;
