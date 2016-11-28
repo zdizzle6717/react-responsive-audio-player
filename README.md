@@ -63,8 +63,8 @@ The fastest way to get off the ground with this module is to paste the following
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>React Responsive Audio Player</title>
     <style> html, body { margin: 0; background: lightseagreen; } </style>
-    <!-- audioplayer.css v1.1.0 -->
-    <link rel="stylesheet" href="https://cdn.rawgit.com/benwiley4000/react-responsive-audio-player/7f0a03f7bbb6db45dff4807228cb6d6c11d2512b/audioplayer.css">
+    <!-- audioplayer.css v1.1.1 -->
+    <link rel="stylesheet" href="https://cdn.rawgit.com/benwiley4000/react-responsive-audio-player/47fc7583acface4e7a717552b08dc115767e2eda/audioplayer.css">
   </head>
   <body>
     <div id="audio_player_container"></div>
@@ -72,8 +72,8 @@ The fastest way to get off the ground with this module is to paste the following
     <!-- react/react-dom served over CDN -->
     <script src="https://unpkg.com/react@15/dist/react.js"></script>
     <script src="https://unpkg.com/react-dom@15/dist/react-dom.js"></script>
-    <!-- audioplayer.js v1.1.0 -->
-    <script src="https://cdn.rawgit.com/benwiley4000/react-responsive-audio-player/7f0a03f7bbb6db45dff4807228cb6d6c11d2512b/audioplayer.js"></script>
+    <!-- audioplayer.js v1.1.1 -->
+    <script src="https://cdn.rawgit.com/benwiley4000/react-responsive-audio-player/47fc7583acface4e7a717552b08dc115767e2eda/audioplayer.js"></script>
     <script>
       var playlist =
         [{ url: 'song1.mp3', displayText: 'Track 1 - a track to remember' },
