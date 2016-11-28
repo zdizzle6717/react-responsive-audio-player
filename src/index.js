@@ -108,7 +108,8 @@ class AudioPlayer extends React.Component {
     this.audioPauseListener = () => this.setState({ paused: true });
     this.audioEndListener = () => {
       const gapLengthInSeconds = this.props.gapLengthInSeconds || 0;
-      setTimeout(() => this.skipToNextTrack(), gapLengthInSeconds * 1000);
+      clearTimeout(this.gapLengthTimeout);
+      this.gapLengthTimeout = setTimeout(() => this.skipToNextTrack(), gapLengthInSeconds * 1000);
     };
     this.audioStallListener = () => this.togglePause(true);
     this.audioTimeUpdateListener = () => this.handleTimeUpdate();
@@ -140,7 +141,8 @@ class AudioPlayer extends React.Component {
       this.updateSource();
       if (this.props.autoplay) {
         const delay = this.props.autoplayDelayInSeconds || 0;
-        setTimeout(() => this.togglePause(false), delay * 1000);
+        clearTimeout(this.delayTimeout);
+        this.delayTimeout = setTimeout(() => this.togglePause(false), delay * 1000);
       }
     }
 
@@ -163,6 +165,8 @@ class AudioPlayer extends React.Component {
     this.audio.removeEventListener('timeupdate', this.audioTimeUpdateListener);
     this.audio.removeEventListener('loadedmetadata', this.audioMetadataLoadedListener);
     this.removeMediaEventListeners(this.props.onMediaEvent);
+    clearTimeout(this.gapLengthTimeout);
+    clearTimeout(this.delayTimeout);
 
     // pause the audio element before we unmount
     this.audio.pause();
