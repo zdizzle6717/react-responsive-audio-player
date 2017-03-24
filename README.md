@@ -1,4 +1,4 @@
-#react-responsive-audio-player
+# react-responsive-audio-player
 
 ![react-responsive-audio-player in action](demo.gif)
 
@@ -52,8 +52,8 @@ ReactDOM.render(
 );
 ```
 
-##Getting started
-###Quick start
+## Getting started
+### Quick start
 The fastest way to get off the ground with this module is to paste the following code into an HTML file and open it in a web browser:
 ```html
 <!DOCTYPE html>
@@ -93,7 +93,7 @@ The fastest way to get off the ground with this module is to paste the following
 ```
 Of course you'll need to include paths to actual audio files, or the player will display and not work.
 
-###Package installation
+### Package installation
 If you use [npm](https://www.npmjs.com/) and a front-end package bundling system like [Browserify](http://browserify.org/) or [webpack](https://webpack.github.io/), it's recommended that you install the package and its dependencies in your project:
 ```
 npm install --save react-responsive-audio-player react react-dom
@@ -102,10 +102,10 @@ While `react-dom` isn't technically a peer dependency, you'll need it if you pla
 
 When you first include the component in your project it might not look how you're expecting. Be sure to check the **Styling** section below.
 
-###Pre-built releases
+### Pre-built releases
 If you prefer not to use a package bundler, you can find built releases to download [here](https://github.com/benwiley4000/react-responsive-audio-player/releases).
 
-##Options
+## Options
 Options can be passed to the AudioPlayer element as props. Currently supported props are:
 
 * `playlist`: an array containing urls and display text for each of the tracks you wish to play (see above example for format). **undefined** by default.
@@ -134,7 +134,7 @@ Options can be passed to the AudioPlayer element as props. Currently supported p
 
 None of these options are required, though the player will be functionally disabled if no `playlist` prop is provided.
 
-##Styling
+## Styling
 **IMPORTANT NOTES**
 * In order to use the default stylings you'll need to grab the compiled `audioplayer.css` sheet from the module's `dist/` directory. Again, if you're not using npm, you can get the sheet [here](https://github.com/benwiley4000/react-responsive-audio-player/releases).
 * If you want your audio player to take the full screen width, do the following:
@@ -176,6 +176,6 @@ To make the audio player's background color `firebrick`, use:
 ```
 Alternatively, for styles which only affect the outer element, use [React inline styles](https://facebook.github.io/react/docs/dom-elements.html#style).
 
-#Development
+# Development
 
 For building and testing instructions, see [CONTRIBUTING.md](CONTRIBUTING.md).
