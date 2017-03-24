@@ -10,7 +10,7 @@ A simple, clean, and responsive visual wrapper for the HTML audio tag, built wit
 
 **If you're not using npm and you need production-ready scripts to include in your project, check out [the releases](https://github.com/benwiley4000/react-responsive-audio-player/releases).**
 
-##Usage
+## Usage
 HTML:
 ```html
 <!DOCTYPE html>
