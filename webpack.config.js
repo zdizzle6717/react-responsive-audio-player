@@ -32,7 +32,7 @@ var webpackConfig = {
     ]
   },
   postcss: function () {
-    return [autoprefixer({ browsers: ["> 2%"] })];
+    return [autoprefixer({ browsers: ['> 2%'] })];
   },
   externals: {
     'react': {
